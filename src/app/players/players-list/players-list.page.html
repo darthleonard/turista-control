@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Players</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div
+    *ngIf="players.length === 0"
+    class="ion-text-center"
+    style="margin-top: 15em"
+  >
+    <ion-text color="secondary">No Players Found</ion-text>
+  </div>
+
+  <ion-list *ngIf="players.length > 0">
+    <ion-item *ngFor="let player of players" (click)="onEditClick(player)">
+      <ion-avatar slot="start">
+        <img [src]="player.image ? player.image : 'assets/avatar/notset.png'" />
+      </ion-avatar>
+      <ion-label>{{ player.name }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-modal [isOpen]="isModalOpen" (willDismiss)="onModalWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="modalCancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Player</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modalConfirm()" [strong]="true"
+              >Confirm</ion-button
+            >
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="error" *ngIf="validationResult">
+          {{ validationResult.message }}
+        </div>
+        <ion-item>
+          <ion-input
+            label="Player Name"
+            labelPlacement="stacked"
+            type="text"
+            [(ngModel)]="modalPlayer.name"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input
+            label="Player Image"
+            labelPlacement="stacked"
+            type="text"
+            [(ngModel)]="modalPlayer.image"
+            readonly
+          ></ion-input>
+        </ion-item>
+        <ion-button
+          *ngIf="modalPlayer.id"
+          class="ion-margin-top"
+          (click)="onDeleteClick(modalPlayer)"
+          color="danger"
+          expand="block"
+        >
+          <ion-ripple-effect></ion-ripple-effect>
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="setModalOpen(true)">
+      <ion-icon name="add" />
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
