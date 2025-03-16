@@ -1,0 +1,7 @@
+{
+  "name": "turista-control",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
