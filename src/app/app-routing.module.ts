@@ -8,12 +8,16 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'players',
+    redirectTo: 'game',
     pathMatch: 'full'
   },
   {
     path: 'players',
     loadChildren: () => import('./players/players.module').then( m => m.PlayersPageModule)
+  },
+  {
+    path: 'game',
+    loadChildren: () => import('./game/game.module').then( m => m.GamePageModule)
   },
 ];
 

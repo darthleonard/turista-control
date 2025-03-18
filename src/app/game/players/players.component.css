@@ -1,0 +1,6 @@
+.selected {
+  background-color: aqua;
+  color: aquamarine;
+  border: 1px solid aquamarine;
+  border-left: 1em solid aquamarine;
+}

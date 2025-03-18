@@ -3,6 +3,7 @@ import Dexie from 'dexie';
 export interface Player {
    id: number;
    name: string;
+   selected?: boolean;
    image?: string;
    score?: number;
 }
