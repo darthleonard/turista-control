@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HeaderComponent } from './header/header.component';
 import { MenuComponent } from './menu/menu.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [MenuComponent, HeaderComponent],
@@ -13,6 +14,7 @@ import { MenuComponent } from './menu/menu.component';
     IonicModule.forRoot(),
     RouterModule,
     ReactiveFormsModule,
+    TranslateModule,
   ],
   exports: [MenuComponent, HeaderComponent],
   providers: [DatePipe],

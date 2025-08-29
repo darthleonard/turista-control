@@ -1,0 +1,18 @@
+{
+  "CANCEL": "Cancelar",
+  "CARDS": "Cartas",
+  "CONFIRM": "Confirmar",
+  "DASHBOARD": "Panel",
+  "DELETE": "Eliminar",
+  "GAME": "Juego",
+  "IMAGE": "Imagen",
+  "NAME": "Nombre",
+  "NO_PLAYERS_FOUND": "No se encontraron jugadores",
+  "PLAY": "Jugar",
+  "PLAYER": "Jugador",
+  "PLAYER_NAME_IS_REQUIRED": "El nombre del jugador es obligatorio",
+  "PLAYERS": "Jugadores",
+  "SAVE": "Guardar",
+  "SELECT_LANGUAGE": "Seleccionar idioma",
+  "SETTINGS": "Configuracion"
+}

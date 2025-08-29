@@ -1,4 +1,4 @@
-<app-header title="Players"></app-header>
+<app-header title="PLAYERS"></app-header>
 
 <ion-content>
   <div
@@ -6,7 +6,7 @@
     class="ion-text-center"
     style="margin-top: 15em"
   >
-    <ion-text color="secondary">No Players Found</ion-text>
+    <ion-text color="secondary">{{ 'NO_PLAYERS_FOUND' | translate }}</ion-text>
   </div>
 
   <ion-list *ngIf="players.length > 0">
@@ -23,23 +23,25 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="modalCancel()">Cancel</ion-button>
+            <ion-button (click)="modalCancel()">
+              <ion-icon name="close" color="danger"></ion-icon>
+            </ion-button>
           </ion-buttons>
-          <ion-title>Player</ion-title>
+          <ion-title>{{ 'PLAYER' | translate }}</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="modalConfirm()" [strong]="true"
-              >Confirm</ion-button
-            >
+            <ion-button (click)="modalConfirm()" [strong]="true">
+              <ion-icon name="save-outline" color="success"></ion-icon>
+            </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         <div class="error" *ngIf="validationResult">
-          {{ validationResult.message }}
+          {{ validationResult.message | translate }}
         </div>
         <ion-item>
           <ion-input
-            label="Player Name"
+            [label]="'NAME' | translate"
             labelPlacement="stacked"
             type="text"
             [(ngModel)]="modalPlayer.name"
@@ -48,7 +50,7 @@
         </ion-item>
         <ion-item>
           <ion-input
-            label="Player Image"
+            [label]="'IMAGE' | translate"
             labelPlacement="stacked"
             type="text"
             [(ngModel)]="modalPlayer.image"
@@ -64,6 +66,7 @@
         >
           <ion-ripple-effect></ion-ripple-effect>
           <ion-icon name="trash-outline"></ion-icon>
+          {{ 'DELETE' | translate }}
         </ion-button>
       </ion-content>
     </ng-template>
