@@ -1,5 +1,8 @@
 {
   "GAME": "Game",
   "TITLE": "Welcome",
-  "DESCRIPTION": "This is the default English translation file."
+  "DESCRIPTION": "This is the default English translation file.",
+  "SAVE": "Save",
+  "SETTINGS": "Settings",
+  "SELECT_LANGUAGE": "Select Language"
 }

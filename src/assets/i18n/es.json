@@ -1,5 +1,8 @@
 {
   "GAME": "Juego",
   "TITLE": "Bienvenido",
-  "DESCRIPTION": "Este es el archivo de traducción predeterminado en español."
+  "DESCRIPTION": "Este es el archivo de traducción predeterminado en español.",
+  "SAVE": "Guardar",
+  "SETTINGS": "Configuracion",
+  "SELECT_LANGUAGE": "Seleccionar idioma"
 }
