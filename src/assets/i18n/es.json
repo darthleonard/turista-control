@@ -1,8 +1,10 @@
 {
+  "CARDS": "Cartas",
+  "DASHBOARD": "Panel",
   "GAME": "Juego",
-  "TITLE": "Bienvenido",
-  "DESCRIPTION": "Este es el archivo de traducción predeterminado en español.",
+  "PLAY": "Jugar",
+  "PLAYERS": "Jugadores",
   "SAVE": "Guardar",
-  "SETTINGS": "Configuracion",
-  "SELECT_LANGUAGE": "Seleccionar idioma"
+  "SELECT_LANGUAGE": "Seleccionar idioma",
+  "SETTINGS": "Configuracion"
 }

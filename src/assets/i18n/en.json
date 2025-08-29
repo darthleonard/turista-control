@@ -1,8 +1,10 @@
 {
+  "CARDS": "Cards",
+  "DASHBOARD": "Dashboard",
   "GAME": "Game",
-  "TITLE": "Welcome",
-  "DESCRIPTION": "This is the default English translation file.",
+  "PLAY": "Play",
+  "PLAYERS": "Players",
   "SAVE": "Save",
-  "SETTINGS": "Settings",
-  "SELECT_LANGUAGE": "Select Language"
+  "SELECT_LANGUAGE": "Select Language",
+  "SETTINGS": "Settings"
 }
