@@ -39,12 +39,12 @@ export class PlayersListPage implements OnInit {
         player.id !== this.modalPlayer?.id
     );
     if (existingPlayer) {
-      this.validationResult = { message: 'Player name is used' };
+      this.validationResult = { message: 'PLAYER_NAME_IS_USED' };
       return;
     }
 
     if (!this.modalPlayer?.name) {
-      this.validationResult = { message: 'Player name is required' };
+      this.validationResult = { message: 'PLAYER_NAME_IS_REQUIRED' };
       return;
     }
 

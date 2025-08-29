@@ -10,6 +10,7 @@
   "NO_PLAYERS_FOUND": "No se encontraron jugadores",
   "PLAY": "Jugar",
   "PLAYER": "Jugador",
+  "PLAYER_NAME_IS_REQUIRED": "El nombre del jugador es obligatorio",
   "PLAYERS": "Jugadores",
   "SAVE": "Guardar",
   "SELECT_LANGUAGE": "Seleccionar idioma",

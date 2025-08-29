@@ -10,6 +10,7 @@
   "NO_PLAYERS_FOUND": "No players found",
   "PLAY": "Play",
   "PLAYER": "Player",
+  "PLAYER_NAME_IS_REQUIRED": "Player name is required",
   "PLAYERS": "Players",
   "SAVE": "Save",
   "SELECT_LANGUAGE": "Select Language",
