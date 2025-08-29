@@ -23,16 +23,15 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="modalCancel()"
-              >{{ 'CANCEL' | translate }}</ion-button
-            >
+            <ion-button (click)="modalCancel()">
+              <ion-icon name="close" color="danger"></ion-icon>
+            </ion-button>
           </ion-buttons>
           <ion-title>{{ 'PLAYER' | translate }}</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="modalConfirm()" [strong]="true"
-              >{{ 'CONFIRM' | translate }}</ion-button
-            >
-            >
+            <ion-button (click)="modalConfirm()" [strong]="true">
+              <ion-icon name="save-outline" color="success"></ion-icon>
+            </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
