@@ -1,97 +1,74 @@
 import Dexie from 'dexie';
 
-//
-// Catálogo global de jugadores (miembros de la familia)
-//
 export interface Player {
-  id?: number;
+  id: number;
   name: string;
   image?: string;
 }
 
-//
-// Catálogo de propiedades/casillas del tablero
-//
 export interface Property {
-  id?: number;
-  name: string; // "Avenida Reforma", "Ferrocarril"
-  type: 'property' | 'station' | 'utility' | 'special';
-  position: number; // índice/casilla en el tablero
-  price?: number; // costo de compra (si aplica)
-  rent?: number; // renta base
-  group?: string; // color/zona ("Rojo", "Verde", "Estación")
+  id: number;
+  name: string;
+  value: number;
 }
 
-//
-// Configuración inicial de una partida
-//
-export interface GameConfig {
-  id?: number;
-  name: string; // nombre de la sesión de juego ("Partida con primos")
-  createdAt: Date;
-  initialMoney: number;
-  boardConfig: string; // JSON con reglas especiales / config de tablero
-  playerIds: number[]; // referencias a jugadores seleccionados
-  bankPlayerId: number; // jugador que actúa como banco
+export interface PlayerState {
+  playerId: number;
+  cash: number;
+  position: number;
+  properties: number[];
 }
 
-//
-// Estado actual de la partida
-//
 export interface GameState {
   id?: number;
-  gameConfigId: number; // referencia a la configuración
+  gameConfigId: number;
   turnNumber: number;
   currentPlayerId: number;
-  playersState: {
-    [playerId: number]: {
-      cash: number;
-      properties: number[]; // referencias a Property.id
-      position: number; // casilla actual
-    };
-  };
-  log: string[]; // eventos ("Ana compró Avenida Reforma")
-  updatedAt: Date;
-  isFinished: boolean;
+  playersState: { [playerId: number]: PlayerState };
+  log: string[];
+  updatedAt?: Date;
 }
 
-//
-// Historial de partidas finalizadas
-//
+export interface GameConfig {
+  id?: number;
+  name: string;
+  createdAt?: Date;
+  initialMoney: number;
+  boardConfig: string;
+  playerIds: number[];
+  bankPlayerId: number;
+}
+
 export interface GameHistory {
   id?: number;
-  gameConfigId: number; // vincular con la configuración inicial
-  finishedAt: Date;
+  gameConfigId: number;
   totalTurns: number;
   winnerId: number;
   stats: {
     [playerId: number]: {
-      properties: number; // cuántas propiedades posee
+      properties: number;
       cash: number;
-      totalValue: number; // cash + valor de propiedades
+      totalValue: number;
     };
   };
+  finishedAt: Date;
 }
 
-//
-// Definición Dexie
-//
 export class LocalDatabase extends Dexie {
-  players!: Dexie.Table<Player, number>;
-  properties!: Dexie.Table<Property, number>;
-  gameConfigs!: Dexie.Table<GameConfig, number>;
-  gameStates!: Dexie.Table<GameState, number>;
-  gameHistories!: Dexie.Table<GameHistory, number>;
+  players: Dexie.Table<Player, number>;
+  properties: Dexie.Table<Property, number>;
+  gameConfigs: Dexie.Table<GameConfig, number>;
+  gameStates: Dexie.Table<GameState, number>;
+  gameHistories: Dexie.Table<GameHistory, number>;
 
   constructor() {
     super('turista-control');
-
     this.version(1).stores({
-      players: '++id, name',
-      properties: '++id, position, name',
-      gameConfigs: '++id, createdAt',
-      gameStates: '++id, gameConfigId, updatedAt',
-      gameHistories: '++id, gameConfigId, finishedAt',
+      players: 'id++',
+      properties: 'id++',
+      gameConfigs: 'id++',
+      gameStates: 'id++',
+      gameHistories: 'id++',
     });
 
     this.players = this.table('players');

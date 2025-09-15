@@ -1,27 +1,25 @@
 import { Injectable } from '@angular/core';
-import { localDatabase } from '../database/local-database';
-import { GameConfig, GameState, GameHistory } from '../database/local-database';
+import {
+  localDatabase,
+  GameConfig,
+  GameState,
+  GameHistory,
+} from '../database/local-database';
 
 @Injectable({ providedIn: 'root' })
 export class GameService {
-  // Config
-  async createConfig(
-    config: Omit<GameConfig, 'id' | 'createdAt'>
-  ): Promise<number> {
-    return localDatabase.gameConfigs.add({ ...config, createdAt: new Date() });
+  async createGame(config: Omit<GameConfig, 'id'>): Promise<number> {
+    return localDatabase.gameConfigs.add({
+      ...config,
+      createdAt: new Date(),
+    });
   }
 
-  async getConfigById(id: number): Promise<GameConfig | undefined> {
-    return localDatabase.gameConfigs.get(id);
-  }
-
-  async getAllConfigs(): Promise<GameConfig[]> {
-    return localDatabase.gameConfigs.toArray();
-  }
-
-  // State
-  async saveState(state: Omit<GameState, 'id' | 'updatedAt'>): Promise<number> {
-    return localDatabase.gameStates.put({ ...state, updatedAt: new Date() });
+  async saveState(state: GameState): Promise<number> {
+    return localDatabase.gameStates.add({
+      ...state,
+      updatedAt: new Date(),
+    });
   }
 
   async getStateByConfig(configId: number): Promise<GameState | undefined> {
@@ -31,14 +29,8 @@ export class GameService {
       .last();
   }
 
-  // History
-  async saveHistory(
-    history: Omit<GameHistory, 'id' | 'finishedAt'>
-  ): Promise<number> {
-    return localDatabase.gameHistories.add({
-      ...history,
-      finishedAt: new Date(),
-    });
+  async saveHistory(history: Omit<GameHistory, 'id'>): Promise<number> {
+    return localDatabase.gameHistories.add(history);
   }
 
   async getAllHistories(): Promise<GameHistory[]> {
