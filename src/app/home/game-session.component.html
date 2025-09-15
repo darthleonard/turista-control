@@ -1,18 +1,30 @@
-<app-header></app-header>
-<div *ngIf="config && state; else loading">
-  <h2>{{ config.name }}</h2>
-  <p>Turno actual: {{ state.turnNumber }}</p>
-  <p>Jugador en turno: {{ state.currentPlayerId }}</p>
+<app-header title="Game Session"></app-header>
 
-  <button (click)="nextTurn()">Siguiente turno</button>
-  <button (click)="endGame()">Finalizar partida</button>
+<ion-content class="ion-padding">
+  <div *ngIf="!gameState">
+    <p>No hay partida activa</p>
+  </div>
 
-  <h3>Log</h3>
-  <ul>
-    <li *ngFor="let entry of state.log">{{ entry }}</li>
-  </ul>
-</div>
+  <div *ngIf="gameState">
+    <h2>Turno {{ gameState.turnNumber }}</h2>
+    <p>Jugador actual: {{ currentPlayerId }}</p>
 
-<ng-template #loading>
-  <p>Cargando partida...</p>
-</ng-template>
+    <ion-button (click)="nextTurn()">Siguiente turno</ion-button>
+    <ion-button (click)="movePlayer(1)">Mover 1 paso</ion-button>
+    <ion-button (click)="movePlayer(2)">Mover 2 pasos</ion-button>
+
+    <ion-list>
+      <ion-item *ngFor="let player of players">
+        {{ player.name }} - Cash: {{ gameState.playersState[player.id].cash }} -
+        Props: {{ getPlayerPropertiesLength(player.id) }}
+      </ion-item>
+    </ion-list>
+
+    <ion-button color="danger" (click)="endGame(currentPlayerId!)"
+      >Finalizar Juego</ion-button
+    >
+
+    <h3>Log:</h3>
+    <div *ngFor="let entry of gameState.log">{{ entry }}</div>
+  </div>
+</ion-content>
