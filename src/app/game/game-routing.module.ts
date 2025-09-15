@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { GamePage } from './game.page';
+import { GameSessionComponent } from './game-session.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: GamePage
-  }
+    component: GameSessionComponent, // GamePage
+  },
 ];
 
 @NgModule({

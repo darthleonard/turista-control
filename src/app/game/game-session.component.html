@@ -1,0 +1,49 @@
+<app-header title="Game Session"></app-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="!gameState">
+    <p>No hay partida activa</p>
+    <ion-button expand="block" color="primary" (click)="startNewGame()">
+      Iniciar nueva partida
+    </ion-button>
+  </div>
+
+  <div *ngIf="gameState">
+    <h2>Turno {{ gameState.turnNumber }}</h2>
+    <p>Jugador actual: {{ currentPlayerId }}</p>
+
+    <ion-button expand="block" color="primary" (click)="nextTurn()"
+      >Siguiente turno</ion-button
+    >
+
+    <h3>Jugadores:</h3>
+    <ion-list>
+      <ion-item *ngFor="let player of players">
+        {{ player.name }}
+        - Cash: {{ getPlayerCash(player.id) }} - Props:
+        {{ getPlayerPropertiesLength(player.id) }}
+      </ion-item>
+    </ion-list>
+
+    <h3>Acciones:</h3>
+    <ion-button expand="block" (click)="movePlayer(1)">Mover 1 paso</ion-button>
+    <ion-button expand="block" (click)="movePlayer(2)"
+      >Mover 2 pasos</ion-button
+    >
+    <ion-button expand="block" color="success" (click)="buyProperty(1)"
+      >Comprar propiedad #1</ion-button
+    >
+    <ion-button expand="block" color="tertiary" (click)="payRent(1, 2)"
+      >Pagar renta propiedad #1 al jugador #2</ion-button
+    >
+    <ion-button
+      expand="block"
+      color="danger"
+      (click)="endGame(currentPlayerId!)"
+      >Finalizar Juego</ion-button
+    >
+
+    <h3>Log de partida:</h3>
+    <div *ngFor="let entry of gameState.log">{{ entry }}</div>
+  </div>
+</ion-content>

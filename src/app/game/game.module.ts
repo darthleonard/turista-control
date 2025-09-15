@@ -6,6 +6,7 @@ import { ComponentsModule } from '../components/components.module';
 import { GamePageRoutingModule } from './game-routing.module';
 import { GamePage } from './game.page';
 import { PlayersComponent } from './players/players.component';
+import { GameSessionComponent } from './game-session.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { PlayersComponent } from './players/players.component';
     ComponentsModule,
     GamePageRoutingModule,
   ],
-  declarations: [GamePage, PlayersComponent],
+  declarations: [GamePage, GameSessionComponent, PlayersComponent],
 })
 export class GamePageModule {}
