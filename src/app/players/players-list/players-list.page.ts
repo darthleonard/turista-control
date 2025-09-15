@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
-import { localDatabase, Player } from '../../database/local-database';
+import { Player } from '../../database/local-database';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
   selector: 'app-players-list',
@@ -12,7 +13,7 @@ import { localDatabase, Player } from '../../database/local-database';
 export class PlayersListPage implements OnInit {
   @ViewChild(IonModal) private readonly modal!: IonModal;
 
-  constructor() {}
+  constructor(private playerService: PlayerService) {}
 
   isModalOpen = false;
   validationResult?: { message: string } = undefined;
@@ -49,12 +50,14 @@ export class PlayersListPage implements OnInit {
     }
 
     if (this.modalPlayer?.id) {
-      await localDatabase.players.update(this.modalPlayer.id, {
+      await this.playerService.update(this.modalPlayer.id, {
         name: this.modalPlayer.name.toUpperCase(),
+        image: this.modalPlayer.image,
       });
     } else {
-      await localDatabase.players.add({
+      await this.playerService.add({
         name: this.modalPlayer?.name.toUpperCase(),
+        image: this.modalPlayer?.image,
       } as Player);
     }
 
@@ -63,7 +66,7 @@ export class PlayersListPage implements OnInit {
   }
 
   onModalWillDismiss(event: CustomEvent<OverlayEventDetail>) {
-    this.modalPlayer = { id: 0, name: '' } as Player;
+    this.modalPlayer = { id: 0, name: '', image: 'assets/avatar/notset.png' };
     this.validationResult = undefined;
   }
 
@@ -72,13 +75,15 @@ export class PlayersListPage implements OnInit {
     this.setModalOpen(true);
   }
 
-  onDeleteClick(player: Player) {
-    localDatabase.players.delete(player.id);
+  async onDeleteClick(player: Player) {
+    if (player.id) {
+      await this.playerService.delete(player.id);
+    }
     this.setModalOpen(false);
     this.loadPlayers();
   }
 
   private async loadPlayers() {
-    this.players = await localDatabase.players.toArray();
+    this.players = await this.playerService.getAll();
   }
 }
