@@ -1,13 +1,18 @@
 <app-header title="Game Session"></app-header>
 
 <ion-content class="ion-padding">
-  <div *ngIf="!gameState">
+  <!-- Selector de jugadores (modal reutilizable) -->
+  <app-players (acceept)="onPlayersSelected($event)"></app-players>
+
+  <!-- Botón para iniciar nueva partida -->
+  <div *ngIf="!gameState" class="ion-text-center" style="margin-top: 5em">
     <p>No hay partida activa</p>
     <ion-button expand="block" color="primary" (click)="startNewGame()">
       Iniciar nueva partida
     </ion-button>
   </div>
 
+  <!-- Juego activo -->
   <div *ngIf="gameState">
     <h2>Turno {{ gameState.turnNumber }}</h2>
     <p>Jugador actual: {{ currentPlayerId }}</p>

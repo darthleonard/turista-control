@@ -4,3 +4,10 @@
   border: 1px solid aquamarine;
   border-left: 1em solid aquamarine;
 }
+
+.bank {
+  background-color: gold;
+  color: darkgreen;
+  border: 2px solid darkgreen;
+  font-weight: bold;
+}
