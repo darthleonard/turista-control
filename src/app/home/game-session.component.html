@@ -1,0 +1,18 @@
+<app-header></app-header>
+<div *ngIf="config && state; else loading">
+  <h2>{{ config.name }}</h2>
+  <p>Turno actual: {{ state.turnNumber }}</p>
+  <p>Jugador en turno: {{ state.currentPlayerId }}</p>
+
+  <button (click)="nextTurn()">Siguiente turno</button>
+  <button (click)="endGame()">Finalizar partida</button>
+
+  <h3>Log</h3>
+  <ul>
+    <li *ngFor="let entry of state.log">{{ entry }}</li>
+  </ul>
+</div>
+
+<ng-template #loading>
+  <p>Cargando partida...</p>
+</ng-template>
