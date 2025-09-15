@@ -5,7 +5,7 @@ import { localDatabase, Player } from 'src/app/database/local-database';
   selector: 'app-players',
   templateUrl: 'players.component.html',
   styleUrls: ['players.component.css'],
-  standalone: false
+  standalone: false,
 })
 export class PlayersComponent {
   @Output() acceept = new EventEmitter<Player[]>();
@@ -15,7 +15,7 @@ export class PlayersComponent {
   playersSelected: Player[] = [];
 
   setOpen(isOpen: boolean) {
-    if(isOpen) {
+    if (isOpen) {
       this.loadPlayers();
     }
     this.isModalOpen = isOpen;
@@ -27,17 +27,19 @@ export class PlayersComponent {
   }
 
   onPlayerSelected(player: Player) {
-    const playerIndex = this.playersSelected.findIndex(p => p.id === player.id);
+    const playerIndex = this.playersSelected.findIndex(
+      (p) => p.id === player.id
+    );
     if (playerIndex >= 0) {
       this.playersSelected.splice(playerIndex, 1);
-      player.selected = false;
+      //player.selected = false;
     } else {
       this.playersSelected.push(player);
-      player.selected = true;
+      //player.selected = true;
     }
   }
 
   private async loadPlayers() {
-      this.players = await localDatabase.players.toArray();
-    }
+    this.players = await localDatabase.players.toArray();
+  }
 }
