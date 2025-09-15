@@ -1,38 +1,45 @@
 import { Injectable } from '@angular/core';
 import { GameService } from './game.service';
-import { PropertyService } from './property.service';
 import {
-  GameConfig,
-  GameHistory,
-  GameState,
   Player,
+  GameConfig,
+  GameState,
   PlayerState,
-  Property,
 } from '../database/local-database';
-
-export interface ActiveGame {
-  configId: number;
-  state: GameState;
-}
 
 @Injectable({ providedIn: 'root' })
 export class GameEngineService {
-  private currentGame: ActiveGame | null = null;
+  private currentGame: { configId: number; state: GameState } | null = null;
 
-  constructor(
-    private readonly gameService: GameService,
-    private readonly propertyService: PropertyService
-  ) {}
+  constructor(private readonly gameService: GameService) {}
 
+  getCurrentGame() {
+    return this.currentGame;
+  }
+
+  // Inicia un nuevo juego o retoma uno existente
   async startNewGame(
     config: Omit<GameConfig, 'id'>,
     players: Player[]
   ): Promise<number> {
-    const configId = await this.gameService.createGame(config);
+    // Revisar si ya existe un juego con este nombre
+    const existingGame = await this.gameService.getByName(config.name);
+    let configId: number;
 
-    if (players.some((p) => p.id === undefined))
-      throw new Error('All players must have an ID');
+    if (existingGame) {
+      configId = existingGame.id!;
+    } else {
+      configId = await this.gameService.createGame(config);
+    }
 
+    // Revisar si ya existe estado
+    const existingState = await this.gameService.getStateByConfig(configId);
+    if (existingState) {
+      this.currentGame = { configId, state: existingState };
+      return configId;
+    }
+
+    // Inicializar jugadores
     const initialPlayersState: { [playerId: number]: PlayerState } = {};
     for (const player of players) {
       initialPlayersState[player.id!] = {
@@ -61,32 +68,107 @@ export class GameEngineService {
     return configId;
   }
 
+  // Avanzar al siguiente turno
+  async nextTurn(): Promise<GameState | null> {
+    if (!this.currentGame) return null;
+
+    const playerIds = Object.keys(this.currentGame.state.playersState).map(
+      (id) => Number(id)
+    );
+    const currentIndex = playerIds.indexOf(
+      this.currentGame.state.currentPlayerId
+    );
+    const nextIndex = (currentIndex + 1) % playerIds.length;
+
+    this.currentGame.state.currentPlayerId = playerIds[nextIndex];
+    this.currentGame.state.turnNumber += 1;
+
+    await this.gameService.updateState(this.currentGame.state.id!, {
+      currentPlayerId: this.currentGame.state.currentPlayerId,
+      turnNumber: this.currentGame.state.turnNumber,
+    });
+
+    this.currentGame.state.log.push(
+      `Turno ${this.currentGame.state.turnNumber}: jugador ${this.currentGame.state.currentPlayerId} activo`
+    );
+    return this.currentGame.state;
+  }
+
+  // Mover jugador
+  async movePlayer(playerId: number, steps: number) {
+    if (!this.currentGame) return;
+
+    const playerState = this.currentGame.state.playersState[playerId];
+    playerState.position += steps;
+    this.currentGame.state.log.push(
+      `Jugador ${playerId} se movió ${steps} pasos a posición ${playerState.position}`
+    );
+
+    await this.gameService.updateState(this.currentGame.state.id!, {
+      playersState: this.currentGame.state.playersState,
+    });
+  }
+
+  // Comprar propiedad
+  async buyProperty(playerId: number, propertyId: number) {
+    if (!this.currentGame) return;
+
+    const playerState = this.currentGame.state.playersState[playerId];
+    playerState.properties.push(propertyId);
+    this.currentGame.state.log.push(
+      `Jugador ${playerId} compró propiedad ${propertyId}`
+    );
+
+    await this.gameService.updateState(this.currentGame.state.id!, {
+      playersState: this.currentGame.state.playersState,
+    });
+  }
+
+  // Pagar renta
+  async payRent(playerId: number, propertyId: number, ownerId: number) {
+    if (!this.currentGame) return;
+
+    const playerState = this.currentGame.state.playersState[playerId];
+    const ownerState = this.currentGame.state.playersState[ownerId];
+
+    const rent = 100; // placeholder
+    playerState.cash -= rent;
+    ownerState.cash += rent;
+
+    this.currentGame.state.log.push(
+      `Jugador ${playerId} pagó ${rent} a ${ownerId} por propiedad ${propertyId}`
+    );
+
+    await this.gameService.updateState(this.currentGame.state.id!, {
+      playersState: this.currentGame.state.playersState,
+    });
+  }
+
+  // Finalizar juego
   async endGame(
     configId: number,
     winnerId: number
   ): Promise<number | undefined> {
-    const state = await this.gameService.getStateByConfig(configId);
-    if (!state) return undefined;
+    if (!this.currentGame) return undefined;
 
-    const stats: GameHistory['stats'] = {};
-    const allProperties = await this.propertyService.getAll();
+    const state = this.currentGame.state;
+    const stats: {
+      [playerId: number]: {
+        properties: number;
+        cash: number;
+        totalValue: number;
+      };
+    } = {};
 
     for (const [pid, playerState] of Object.entries(state.playersState)) {
       const playerId = Number(pid);
-      const ps = playerState as PlayerState;
-
-      const propertiesValue = ps.properties.reduce(
-        (sum: number, propId: number) => {
-          const property = allProperties.find((p) => p.id === propId);
-          return sum + (property?.value || 0);
-        },
-        0
-      );
+      const propertiesValue = playerState.properties.length * 1000; // placeholder
+      const totalValue = playerState.cash + propertiesValue;
 
       stats[playerId] = {
-        properties: ps.properties.length,
-        cash: ps.cash,
-        totalValue: ps.cash + propertiesValue,
+        properties: playerState.properties.length,
+        cash: playerState.cash,
+        totalValue,
       };
     }
 
@@ -100,102 +182,5 @@ export class GameEngineService {
 
     this.currentGame = null;
     return historyId;
-  }
-
-  async resumeGame(configId: number): Promise<void> {
-    const state = await this.gameService.getStateByConfig(configId);
-    if (!state) throw new Error('No saved state found');
-
-    this.currentGame = { configId, state };
-  }
-
-  getCurrentGame(): ActiveGame | null {
-    return this.currentGame;
-  }
-
-  async nextTurn(): Promise<GameState> {
-    if (!this.currentGame) throw new Error('No active game');
-
-    const state = this.currentGame.state;
-    const playerIds = Object.keys(state.playersState).map(Number);
-    const currentIndex = playerIds.indexOf(state.currentPlayerId);
-    const nextIndex = (currentIndex + 1) % playerIds.length;
-
-    state.currentPlayerId = playerIds[nextIndex];
-    state.turnNumber += 1;
-    state.log.push(
-      `Turn ${state.turnNumber}: Player ${state.currentPlayerId}'s turn`
-    );
-
-    const stateId = await this.gameService.saveState(state);
-    this.currentGame.state.id = stateId;
-    return this.currentGame.state;
-  }
-
-  async movePlayer(playerId: number, steps: number): Promise<void> {
-    if (!this.currentGame) throw new Error('No active game');
-
-    const state = this.currentGame.state;
-    const playerState = state.playersState[playerId];
-    if (!playerState) throw new Error('Player not found in game');
-
-    playerState.position += steps;
-    state.log.push(
-      `Player ${playerId} moved ${steps} steps to position ${playerState.position}`
-    );
-
-    const stateId = await this.gameService.saveState(state);
-    this.currentGame.state.id = stateId;
-  }
-
-  async buyProperty(playerId: number, propertyId: number): Promise<void> {
-    if (!this.currentGame) throw new Error('No active game');
-
-    const state = this.currentGame.state;
-    const playerState = state.playersState[playerId];
-    const property = await this.propertyService.getById(propertyId);
-    if (!playerState || !property)
-      throw new Error('Player or property not found');
-
-    if (playerState.cash < property.value) throw new Error('Not enough cash');
-
-    playerState.cash -= property.value;
-    playerState.properties.push(propertyId);
-
-    state.log.push(
-      `Player ${playerId} bought property ${property.name} for ${property.value}`
-    );
-
-    const stateId = await this.gameService.saveState(state);
-    this.currentGame.state.id = stateId;
-  }
-
-  async payRent(
-    playerId: number,
-    propertyId: number,
-    ownerId: number
-  ): Promise<void> {
-    if (!this.currentGame) throw new Error('No active game');
-
-    const state = this.currentGame.state;
-    const playerState = state.playersState[playerId];
-    const ownerState = state.playersState[ownerId];
-    const property = await this.propertyService.getById(propertyId);
-
-    if (!playerState || !ownerState || !property)
-      throw new Error('Invalid player, owner or property');
-
-    if (playerState.cash < property.value)
-      throw new Error('Not enough cash to pay rent');
-
-    playerState.cash -= property.value;
-    ownerState.cash += property.value;
-
-    state.log.push(
-      `Player ${playerId} paid ${property.value} rent to Player ${ownerId} for property ${property.name}`
-    );
-
-    const stateId = await this.gameService.saveState(state);
-    this.currentGame.state.id = stateId;
   }
 }
