@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Nueva partida</ion-title>
+    <ion-title>Configuración de Juego</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cancel()">Cancelar</ion-button>
     </ion-buttons>
@@ -34,6 +34,12 @@
           <img [src]="p.image" />
         </ion-avatar>
         <ion-label>{{ p.name }}</ion-label>
+        <ion-icon
+          *ngIf="bankPlayerId === p.id"
+          name="cash-outline"
+          color="success"
+          slot="end"
+        ></ion-icon>
       </ion-item>
     </ion-list>
 

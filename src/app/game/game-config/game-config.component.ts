@@ -27,31 +27,28 @@ export class GameConfigComponent {
     });
   }
 
-  /** Abrir modal de selección de jugadores */
+  /** Abrir modal para seleccionar jugadores */
   async openPlayersModal() {
     const modal = await this.modalCtrl.create({
       component: PlayersComponent,
+      componentProps: { isSelectionMode: true },
     });
     await modal.present();
 
     const { data } = await modal.onWillDismiss<{
       players: Player[];
-      bankPlayerId: number;
+      bankPlayerId?: number;
     }>();
-
     if (data) {
       this.selectedPlayers = data.players;
-      this.bankPlayerId = data.bankPlayerId;
+      this.bankPlayerId = data.bankPlayerId ?? this.selectedPlayers[0]?.id;
     }
   }
 
-  /** Guardar configuración y cerrar modal */
+  /** Guardar configuración */
   async save() {
-    if (
-      this.form.invalid ||
-      this.selectedPlayers.length === 0 ||
-      !this.bankPlayerId
-    ) {
+    if (this.form.invalid || this.selectedPlayers.length === 0) {
+      alert('Completa todos los campos y selecciona jugadores');
       return;
     }
 
@@ -60,7 +57,7 @@ export class GameConfigComponent {
       initialMoney: this.form.value.initialMoney,
       boardConfig: this.form.value.boardConfig,
       playerIds: this.selectedPlayers.map((p) => p.id),
-      bankPlayerId: this.bankPlayerId, // 👈 ahora se respeta el banco seleccionado
+      bankPlayerId: this.bankPlayerId ?? this.selectedPlayers[0].id,
       createdAt: new Date(),
     };
 
@@ -70,7 +67,6 @@ export class GameConfigComponent {
     this.modalCtrl.dismiss(savedConfig);
   }
 
-  /** Cancelar y cerrar modal */
   cancel() {
     this.modalCtrl.dismiss();
   }
