@@ -23,10 +23,8 @@
     </ion-button>
   </div>
 
-  <!-- Juego en curso -->
   <div *ngIf="gameState">
     <h2>{{ "TURN" | translate }} {{ gameState.turnNumber }}</h2>
-    <p>{{ "CURRENT_PLAYER" | translate }} {{ currentPlayerName }}</p>
 
     <ion-button expand="block" color="primary" (click)="nextTurn()">
       {{ "NEXT_TURN" | translate }}
@@ -34,10 +32,19 @@
 
     <h3>{{ "PLAYERS" | translate }}</h3>
     <ion-list>
-      <ion-item *ngFor="let player of players">
+      <ion-item
+        *ngFor="let player of players"
+        [ngClass]="{ 'current-player': player.id === currentPlayerId }"
+      >
         {{ player.name }} - {{ "CASH" | translate }}:
         {{ getPlayerCash(player.id) }} - {{ "PROPERTIES" | translate }}:
         {{ getPlayerPropertiesLength(player.id) }}
+        <ion-icon
+          *ngIf="player.id === currentPlayerId"
+          name="arrow-forward-circle-outline"
+          color="primary"
+          slot="end"
+        ></ion-icon>
       </ion-item>
     </ion-list>
 

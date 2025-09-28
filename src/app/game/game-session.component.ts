@@ -79,6 +79,11 @@ export class GameSessionComponent implements OnInit {
         this.currentPlayerId = state.currentPlayerId;
         this.currentPlayerName =
           this.playerNamesMap[state.currentPlayerId!] ?? '';
+
+        this.gameEngine.setCurrentGame({
+          configId: this.activeConfig.id!,
+          state: this.gameState,
+        });
       }
     } else {
       await this.updateState();

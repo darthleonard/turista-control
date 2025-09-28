@@ -68,6 +68,11 @@ export class GameEngineService {
     return configId;
   }
 
+  /** Permite restaurar una partida en memoria */
+  setCurrentGame(game: { configId: number; state: GameState }) {
+    this.currentGame = game;
+  }
+
   // Avanzar al siguiente turno
   async nextTurn(): Promise<GameState | null> {
     if (!this.currentGame) return null;
