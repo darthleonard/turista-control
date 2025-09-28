@@ -1,15 +1,29 @@
 <app-header title="GAME_SESSION"></app-header>
 
 <ion-content class="ion-padding">
-  <!-- Botón para iniciar nueva partida -->
-  <div *ngIf="!gameState" class="ion-text-center" style="margin-top: 5em">
+  <!-- No hay juego activo todavía -->
+  <div *ngIf="!hasActiveGame" class="ion-text-center" style="margin-top: 5em">
     <p>{{ "GAME_SESSION_NO_ACTIVE" | translate }}</p>
     <ion-button expand="block" color="primary" (click)="startNewGame()">
       {{ "GAME_SESSION_START_NEW" | translate }}
     </ion-button>
   </div>
 
-  <!-- Juego activo -->
+  <!-- Hay juego guardado pero no iniciado en memoria -->
+  <div
+    *ngIf="hasActiveGame && !gameState"
+    class="ion-text-center"
+    style="margin-top: 5em"
+  >
+    <ion-button expand="block" color="primary" (click)="continueGame()">
+      {{ "GAME_SESSION_CONTINUE" | translate }}
+    </ion-button>
+    <ion-button expand="block" color="medium" (click)="startNewGame()">
+      {{ "GAME_SESSION_START_NEW" | translate }}
+    </ion-button>
+  </div>
+
+  <!-- Juego en curso -->
   <div *ngIf="gameState">
     <h2>{{ "GAME_SESSION_TURN" | translate }} {{ gameState.turnNumber }}</h2>
     <p>{{ "GAME_SESSION_CURRENT_PLAYER" | translate }} {{ currentPlayerId }}</p>
@@ -18,27 +32,28 @@
       {{ "GAME_SESSION_NEXT_TURN" | translate }}
     </ion-button>
 
-    <h3>{{ "GAME_SESSION_PLAYERS" | translate }}</h3>
+    <h3>{{ "PLAYERS" | translate }}</h3>
     <ion-list>
       <ion-item *ngFor="let player of players">
-        {{ player.name }} - Cash: {{ getPlayerCash(player.id) }} - Props:
+        {{ player.name }} - {{ "GAME_SESSION_CASH" | translate }}:
+        {{ getPlayerCash(player.id) }} - {{ "PROPERTIES" | translate }}:
         {{ getPlayerPropertiesLength(player.id) }}
       </ion-item>
     </ion-list>
 
     <h3>{{ "GAME_SESSION_ACTIONS" | translate }}</h3>
-    <ion-button expand="block" (click)="movePlayer(1)">{{
-      "GAME_SESSION_MOVE_1" | translate
-    }}</ion-button>
-    <ion-button expand="block" (click)="movePlayer(2)">{{
-      "GAME_SESSION_MOVE_2" | translate
-    }}</ion-button>
-    <ion-button expand="block" color="success" (click)="buyProperty(1)">{{
-      "GAME_SESSION_BUY_PROPERTY" | translate
-    }}</ion-button>
-    <ion-button expand="block" color="tertiary" (click)="payRent(1, 2)">{{
-      "GAME_SESSION_PAY_RENT" | translate
-    }}</ion-button>
+    <ion-button expand="block" (click)="movePlayer(1)">
+      {{ "GAME_SESSION_MOVE_1" | translate }}
+    </ion-button>
+    <ion-button expand="block" (click)="movePlayer(2)">
+      {{ "GAME_SESSION_MOVE_2" | translate }}
+    </ion-button>
+    <ion-button expand="block" color="success" (click)="buyProperty(1)">
+      {{ "GAME_SESSION_BUY_PROPERTY" | translate }}
+    </ion-button>
+    <ion-button expand="block" color="tertiary" (click)="payRent(1, 2)">
+      {{ "GAME_SESSION_PAY_RENT" | translate }}
+    </ion-button>
     <ion-button
       expand="block"
       color="danger"

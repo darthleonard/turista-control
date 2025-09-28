@@ -4,7 +4,6 @@ import { GameEngineService } from '../services/game-engine.service';
 import { GameService } from '../services/game.service';
 import { Player, GameConfig, GameState } from '../database/local-database';
 import { GameConfigComponent } from './game-config/game-config.component';
-import { PlayersComponent } from './players/players.component';
 
 @Component({
   selector: 'app-game-session',
@@ -17,6 +16,7 @@ export class GameSessionComponent implements OnInit {
   gameState: GameState | null = null;
   currentPlayerId: number | null = null;
   activeConfig?: GameConfig;
+  hasActiveGame = false;
 
   constructor(
     private readonly gameEngine: GameEngineService,
@@ -25,13 +25,42 @@ export class GameSessionComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Intentar reanudar partida existente
+    // Intentar reanudar partida en memoria
     const currentGame = this.gameEngine.getCurrentGame();
     if (currentGame) {
       await this.updateState();
+      this.hasActiveGame = true;
+      return;
+    }
+
+    // Buscar último estado guardado en base de datos
+    const lastConfig = await this.gameService.getLastConfig();
+    if (lastConfig) {
+      this.activeConfig = lastConfig;
+      this.hasActiveGame = true;
+    }
+  }
+
+  /** Continuar partida previa */
+  async continueGame() {
+    if (!this.activeConfig) return;
+    const current = this.gameEngine.getCurrentGame();
+    if (!current) {
+      // restaurar jugadores desde config
+      const players = await this.gameService.getPlayersByIds(
+        this.activeConfig.playerIds
+      );
+      this.players = players;
+      // restaurar estado guardado
+      const state = await this.gameService.getStateByConfig(
+        this.activeConfig.id!
+      );
+      if (state) {
+        this.gameState = state;
+        this.currentPlayerId = state.currentPlayerId;
+      }
     } else {
-      // Cargar última configuración guardada
-      this.activeConfig = await this.gameService.getLastConfig();
+      await this.updateState();
     }
   }
 
@@ -56,10 +85,11 @@ export class GameSessionComponent implements OnInit {
     );
     this.players = players;
 
-    // Arrancar el motor de juego con la config y jugadores seleccionados
+    // Arrancar motor
     await this.gameEngine.startNewGame(this.activeConfig, this.players);
 
     await this.updateState();
+    this.hasActiveGame = true;
   }
 
   /** Avanzar turno */
@@ -99,9 +129,10 @@ export class GameSessionComponent implements OnInit {
     );
     console.log('Juego finalizado, history id:', historyId);
     this.gameState = null;
+    this.hasActiveGame = false;
   }
 
-  /** Getters seguros para mostrar información en la UI */
+  /** Getters seguros */
   getPlayerPropertiesLength(playerId: number): number {
     const ps = this.gameState?.playersState[playerId];
     return ps ? ps.properties.length : 0;
@@ -112,7 +143,7 @@ export class GameSessionComponent implements OnInit {
     return ps ? ps.cash : 0;
   }
 
-  /** Actualiza el estado de juego desde el engine */
+  /** Actualiza estado desde engine */
   private async updateState() {
     const game = this.gameEngine.getCurrentGame();
     if (game) {
