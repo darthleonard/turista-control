@@ -15,10 +15,14 @@ export class GameSessionComponent implements OnInit {
   players: Player[] = [];
   gameState: GameState | null = null;
   currentPlayerId: number | null = null;
+  currentPlayerName: string = '';
   activeConfig?: GameConfig;
   hasActiveGame = false;
+
   moveSteps: number | null = null;
   moveStepsError: string | null = null;
+
+  playerNamesMap: { [id: number]: string } = {};
 
   constructor(
     private readonly gameEngine: GameEngineService,
@@ -27,15 +31,14 @@ export class GameSessionComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Intentar reanudar partida en memoria
     const currentGame = this.gameEngine.getCurrentGame();
     if (currentGame) {
+      await this.restorePlayers(currentGame.state);
       await this.updateState();
       this.hasActiveGame = true;
       return;
     }
 
-    // Buscar último estado guardado en base de datos
     const lastConfig = await this.gameService.getLastConfig();
     if (lastConfig) {
       this.activeConfig = lastConfig;
@@ -43,9 +46,21 @@ export class GameSessionComponent implements OnInit {
     }
   }
 
+  private async restorePlayers(state: GameState) {
+    const playerIds = Object.keys(state.playersState).map((id) => Number(id));
+    this.players = await this.gameService.getPlayersByIds(playerIds);
+    this.mapPlayerNames();
+  }
+
+  private mapPlayerNames() {
+    this.playerNamesMap = {};
+    this.players.forEach((p) => (this.playerNamesMap[p.id!] = p.name));
+  }
+
   /** Continuar partida previa */
   async continueGame() {
     if (!this.activeConfig) return;
+
     const current = this.gameEngine.getCurrentGame();
     if (!current) {
       // restaurar jugadores desde config
@@ -53,6 +68,8 @@ export class GameSessionComponent implements OnInit {
         this.activeConfig.playerIds
       );
       this.players = players;
+      this.mapPlayerNames();
+
       // restaurar estado guardado
       const state = await this.gameService.getStateByConfig(
         this.activeConfig.id!
@@ -60,13 +77,15 @@ export class GameSessionComponent implements OnInit {
       if (state) {
         this.gameState = state;
         this.currentPlayerId = state.currentPlayerId;
+        this.currentPlayerName =
+          this.playerNamesMap[state.currentPlayerId!] ?? '';
       }
     } else {
       await this.updateState();
     }
   }
 
-  /** Abrir modal de configuración para iniciar nueva partida */
+  /** Abrir modal de configuración para nueva partida */
   async startNewGame() {
     const configModal = await this.modalCtrl.create({
       component: GameConfigComponent,
@@ -74,22 +93,16 @@ export class GameSessionComponent implements OnInit {
     });
 
     await configModal.present();
-
     const { data: configData } = await configModal.onWillDismiss<GameConfig>();
     if (!configData) return;
 
-    // Guardar configuración
     const configId = await this.gameService.saveConfig(configData);
     this.activeConfig = { ...configData, id: configId };
 
-    const players = await this.gameService.getPlayersByIds(
-      configData.playerIds
-    );
-    this.players = players;
+    this.players = await this.gameService.getPlayersByIds(configData.playerIds);
+    this.mapPlayerNames();
 
-    // Arrancar motor
     await this.gameEngine.startNewGame(this.activeConfig, this.players);
-
     await this.updateState();
     this.hasActiveGame = true;
   }
@@ -97,77 +110,74 @@ export class GameSessionComponent implements OnInit {
   /** Avanzar turno */
   async nextTurn() {
     const state = await this.gameEngine.nextTurn();
-    if (state) this.gameState = state;
-    this.currentPlayerId = this.gameState?.currentPlayerId ?? null;
+    if (state) {
+      this.gameState = state;
+      this.currentPlayerId = state.currentPlayerId;
+      this.currentPlayerName =
+        this.playerNamesMap[state.currentPlayerId!] ?? '';
+    }
   }
 
   onStepsChange() {
     if (this.moveSteps == null) return;
 
-    if (this.moveSteps < 2) {
+    if (this.moveSteps < 2 || this.moveSteps > 12) {
       this.moveStepsError = 'MOVE_STEPS_ERROR';
-      this.moveSteps = 2;
-    } else if (this.moveSteps > 12) {
-      this.moveStepsError = 'MOVE_STEPS_ERROR';
-      this.moveSteps = 12;
+      this.moveSteps = Math.max(2, Math.min(this.moveSteps, 12));
     } else {
       this.moveStepsError = null;
     }
   }
 
   async movePlayer() {
-    if (!this.currentPlayerId || this.moveSteps == null) return;
-
-    if (this.moveStepsError) return;
+    if (!this.currentPlayerId || this.moveSteps == null || this.moveStepsError)
+      return;
 
     await this.gameEngine.movePlayer(this.currentPlayerId, this.moveSteps);
     this.moveSteps = null;
     await this.updateState();
   }
 
-  /** Comprar propiedad */
   async buyProperty(propertyId: number) {
     if (!this.currentPlayerId) return;
     await this.gameEngine.buyProperty(this.currentPlayerId, propertyId);
     await this.updateState();
   }
 
-  /** Pagar renta */
   async payRent(propertyId: number, ownerId: number) {
     if (!this.currentPlayerId) return;
     await this.gameEngine.payRent(this.currentPlayerId, propertyId, ownerId);
     await this.updateState();
   }
 
-  /** Finalizar juego */
-  async endGame(winnerId: number) {
-    if (!this.gameState) return;
+  async endGame() {
+    if (!this.gameState || !this.currentPlayerId) return;
     const historyId = await this.gameEngine.endGame(
       this.gameState.gameConfigId,
-      winnerId
+      this.currentPlayerId
     );
     console.log('Juego finalizado, history id:', historyId);
     this.gameState = null;
+    this.currentPlayerId = null;
+    this.currentPlayerName = '';
     this.hasActiveGame = false;
   }
 
-  /** Getters seguros */
   getPlayerPropertiesLength(playerId: number): number {
-    const ps = this.gameState?.playersState[playerId];
-    return ps ? ps.properties.length : 0;
+    return this.gameState?.playersState[playerId]?.properties.length ?? 0;
   }
 
   getPlayerCash(playerId: number): number {
-    const ps = this.gameState?.playersState[playerId];
-    return ps ? ps.cash : 0;
+    return this.gameState?.playersState[playerId]?.cash ?? 0;
   }
 
-  /** Actualiza estado desde engine */
   private async updateState() {
     const game = this.gameEngine.getCurrentGame();
     if (game) {
       this.gameState = game.state;
       this.currentPlayerId = game.state.currentPlayerId;
+      this.currentPlayerName =
+        this.playerNamesMap[game.state.currentPlayerId!] ?? '';
     }
   }
 }
