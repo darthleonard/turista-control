@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Selecciona jugadores y banco</ion-title>
+    <ion-title>{{ "PLAYERS_SELECT_TITLE" | translate }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="onCancel()">Cancelar</ion-button>
-      <ion-button (click)="onAccept()">Aceptar</ion-button>
+      <ion-button (click)="onCancel()">{{ "CANCEL" | translate }}</ion-button>
+      <ion-button (click)="onAccept()">{{ "ACCEPT" | translate }}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -33,7 +33,7 @@
 
   <!-- Selección de banco solo si hay jugadores seleccionados -->
   <div *ngIf="playersSelected.length > 0" style="margin-top: 1em">
-    <h3>Selecciona quién será el banco</h3>
+    <h3>{{ "PLAYERS_SELECT_BANK" | translate }}</h3>
     <ion-list>
       <ion-item
         *ngFor="let player of playersSelected"
@@ -51,5 +51,5 @@
     </ion-list>
   </div>
 
-  <p *ngIf="players.length === 0">No hay jugadores registrados.</p>
+  <p *ngIf="players.length === 0">{{ "PLAYERS_NO_REGISTERED" | translate }}</p>
 </ion-content>

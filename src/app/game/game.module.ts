@@ -8,6 +8,7 @@ import { GamePage } from './game.page';
 import { PlayersComponent } from './players/players.component';
 import { GameSessionComponent } from './game-session.component';
 import { GameConfigComponent } from './game-config/game-config.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { GameConfigComponent } from './game-config/game-config.component';
     IonicModule,
     ComponentsModule,
     GamePageRoutingModule,
+    TranslateModule,
   ],
   declarations: [
     GamePage,
