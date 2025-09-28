@@ -11,27 +11,27 @@
   <form [formGroup]="form">
     <ion-item>
       <ion-label position="floating">{{
-        "GAME_CONFIG_GAME_NAME" | translate
+        "SESSION_NAME" | translate
       }}</ion-label>
       <ion-input formControlName="name"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">{{
-        "GAME_CONFIG_INITIAL_MONEY" | translate
+        "INITIAL_MONEY" | translate
       }}</ion-label>
       <ion-input type="number" formControlName="initialMoney"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">{{
-        "GAME_CONFIG_BOARD_CONFIG" | translate
+        "BOARD_CONFIG" | translate
       }}</ion-label>
       <ion-input formControlName="boardConfig"></ion-input>
     </ion-item>
 
     <ion-item button detail (click)="openPlayersModal()">
-      <ion-label>{{ "GAME_CONFIG_SELECT_PLAYERS" | translate }}</ion-label>
+      <ion-label>{{ "SELECT_PLAYERS" | translate }}</ion-label>
     </ion-item>
 
     <ion-list *ngIf="selectedPlayers.length > 0">
@@ -50,7 +50,7 @@
     </ion-list>
 
     <ion-button expand="block" color="primary" (click)="save()">
-      {{ "GAME_CONFIG_START_GAME" | translate }}
+      {{ "START_GAME" | translate }}
     </ion-button>
   </form>
 </ion-content>
