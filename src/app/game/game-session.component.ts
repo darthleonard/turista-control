@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { GameEngineService } from '../services/game-engine.service';
 import { GameService } from '../services/game.service';
 import { Player, GameConfig, GameState } from '../database/local-database';
+import { GameConfigComponent } from './game-config/game-config.component';
 import { PlayersComponent } from './players/players.component';
 
 @Component({
@@ -11,15 +13,15 @@ import { PlayersComponent } from './players/players.component';
   standalone: false,
 })
 export class GameSessionComponent implements OnInit {
-  @ViewChild(PlayersComponent) private playerSelector!: PlayersComponent;
-
   players: Player[] = [];
   gameState: GameState | null = null;
   currentPlayerId: number | null = null;
+  activeConfig?: GameConfig;
 
   constructor(
     private readonly gameEngine: GameEngineService,
-    private readonly gameService: GameService
+    private readonly gameService: GameService,
+    private readonly modalCtrl: ModalController
   ) {}
 
   async ngOnInit() {
@@ -27,27 +29,36 @@ export class GameSessionComponent implements OnInit {
     const currentGame = this.gameEngine.getCurrentGame();
     if (currentGame) {
       await this.updateState();
+    } else {
+      // Cargar última configuración guardada
+      this.activeConfig = await this.gameService.getLastConfig();
     }
   }
 
-  /** Abrir modal para seleccionar jugadores */
-  startNewGame() {
-    this.playerSelector?.setOpen(true);
-  }
+  /** Abrir modal de configuración para iniciar nueva partida */
+  async startNewGame() {
+    const configModal = await this.modalCtrl.create({
+      component: GameConfigComponent,
+      componentProps: { config: this.activeConfig },
+    });
 
-  async onPlayersSelected(event: { players: Player[]; bankPlayerId: number }) {
-    const selectedPlayers = event.players;
-    const bankPlayerId = event.bankPlayerId;
+    await configModal.present();
 
-    const config: Omit<GameConfig, 'id'> = {
-      name: 'Partida de prueba',
-      initialMoney: 1500,
-      boardConfig: 'default-board',
-      playerIds: selectedPlayers.map((p) => p.id),
-      bankPlayerId: bankPlayerId,
-    };
+    const { data: configData } = await configModal.onWillDismiss<GameConfig>();
+    if (!configData) return;
 
-    await this.gameEngine.startNewGame(config, selectedPlayers);
+    // Guardar configuración
+    const configId = await this.gameService.saveConfig(configData);
+    this.activeConfig = { ...configData, id: configId };
+
+    const players = await this.gameService.getPlayersByIds(
+      configData.playerIds
+    );
+    this.players = players;
+
+    // Arrancar el motor de juego con la config y jugadores seleccionados
+    await this.gameEngine.startNewGame(this.activeConfig, this.players);
+
     await this.updateState();
   }
 

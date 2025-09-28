@@ -5,19 +5,19 @@ import { PlayersComponent } from './players/players.component';
 @Component({
   selector: 'app-game',
   templateUrl: './game.page.html',
-  standalone: false
+  standalone: false,
 })
 export class GamePage {
   @ViewChild(PlayersComponent) private readonly playersModal!: PlayersComponent;
 
-  constructor() { }
+  constructor() {}
 
   players!: Player;
 
   ionViewWillEnter() {
-    if(!this.players) {
-      this.playersModal.setOpen(true);
-    }
+    // if(!this.players) {
+    //   this.playersModal.setOpen(true);
+    // }
   }
 
   addPlayers(players: any) {

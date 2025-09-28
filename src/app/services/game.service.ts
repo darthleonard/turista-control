@@ -4,43 +4,75 @@ import {
   GameConfig,
   GameState,
   GameHistory,
+  Player,
 } from '../database/local-database';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class GameService {
-  // Crear un nuevo juego
-  async createGame(config: Omit<GameConfig, 'id'>): Promise<number> {
-    const id = await localDatabase.gameConfigs.add(config);
-    return id;
+  constructor() {}
+
+  /** ================= CONFIGURACIONES ================= */
+
+  async saveConfig(
+    config: Omit<GameConfig, 'id'> & { id?: number }
+  ): Promise<number> {
+    if (config.id) {
+      const { id, ...changes } = config;
+      await localDatabase.gameConfigs.update(id, changes);
+      return id;
+    } else {
+      return await localDatabase.gameConfigs.add(config);
+    }
   }
 
-  // Obtener juego por nombre
+  async getLastConfig(): Promise<GameConfig | undefined> {
+    return await localDatabase.gameConfigs.orderBy('id').last();
+  }
+
+  async getAllConfigs(): Promise<GameConfig[]> {
+    return await localDatabase.gameConfigs.toArray();
+  }
+
+  async getConfigById(id: number): Promise<GameConfig | undefined> {
+    return await localDatabase.gameConfigs.get(id);
+  }
+
   async getByName(name: string): Promise<GameConfig | undefined> {
-    return localDatabase.gameConfigs.where('name').equals(name).first();
+    return await localDatabase.gameConfigs.where('name').equals(name).first();
   }
 
-  // Guardar estado de juego
+  async createGame(config: Omit<GameConfig, 'id'>): Promise<number> {
+    return await localDatabase.gameConfigs.add(config);
+  }
+
+  /** ================= JUGADORES ================= */
+
+  async getPlayersByIds(ids: number[]): Promise<Player[]> {
+    return (await localDatabase.players.bulkGet(ids)) as Player[];
+  }
+
+  /** ================= ESTADO DE PARTIDA ================= */
+
   async saveState(state: Omit<GameState, 'id'>): Promise<number> {
-    const id = await localDatabase.gameStates.add(state);
-    return id;
+    return await localDatabase.gameStates.add(state);
   }
 
-  // Obtener estado por configId
+  async updateState(id: number, changes: Partial<GameState>): Promise<number> {
+    return await localDatabase.gameStates.update(id, changes);
+  }
+
   async getStateByConfig(configId: number): Promise<GameState | undefined> {
-    return localDatabase.gameStates
+    return await localDatabase.gameStates
       .where('gameConfigId')
       .equals(configId)
-      .first();
+      .last();
   }
 
-  // Guardar historial de juego
+  /** ================= HISTORIAL ================= */
+
   async saveHistory(history: Omit<GameHistory, 'id'>): Promise<number> {
-    const id = await localDatabase.gameHistories.add(history);
-    return id;
-  }
-
-  // Actualizar estado existente
-  async updateState(id: number, changes: Partial<GameState>): Promise<number> {
-    return localDatabase.gameStates.update(id, changes);
+    return await localDatabase.gameHistories.add(history);
   }
 }

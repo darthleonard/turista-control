@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { localDatabase, Player } from '../../database/local-database';
 
 @Component({
@@ -8,31 +9,17 @@ import { localDatabase, Player } from '../../database/local-database';
   standalone: false,
 })
 export class PlayersComponent implements OnInit {
-  @Output() acceept = new EventEmitter<{
-    players: Player[];
-    bankPlayerId: number;
-  }>();
-
-  isModalOpen = false;
   players: Player[] = [];
   playersSelected: Player[] = [];
   bankPlayerId?: number;
+
+  constructor(private modalCtrl: ModalController) {}
 
   async ngOnInit() {
     await this.loadPlayers();
   }
 
-  /** Abrir o cerrar modal */
-  setOpen(isOpen: boolean) {
-    this.isModalOpen = isOpen;
-    if (isOpen) {
-      this.loadPlayers();
-      this.playersSelected = [];
-      this.bankPlayerId = undefined;
-    }
-  }
-
-  /** Confirmar selección y enviar al componente padre */
+  /** Confirmar selección y cerrar modal */
   onAccept() {
     if (!this.playersSelected.length) {
       alert('Selecciona al menos un jugador');
@@ -43,11 +30,15 @@ export class PlayersComponent implements OnInit {
       return;
     }
 
-    this.isModalOpen = false;
-    this.acceept.emit({
+    this.modalCtrl.dismiss({
       players: this.playersSelected,
       bankPlayerId: this.bankPlayerId,
     });
+  }
+
+  /** Cancelar selección y cerrar modal */
+  onCancel() {
+    this.modalCtrl.dismiss(null);
   }
 
   /** Seleccionar o deseleccionar jugador */

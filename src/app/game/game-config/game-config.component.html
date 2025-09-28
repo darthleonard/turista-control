@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nueva partida</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label position="floating">Nombre de la partida</ion-label>
+      <ion-input formControlName="name"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Dinero inicial</ion-label>
+      <ion-input type="number" formControlName="initialMoney"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Configuración de tablero</ion-label>
+      <ion-input formControlName="boardConfig"></ion-input>
+    </ion-item>
+
+    <ion-item button detail (click)="openPlayersModal()">
+      <ion-label>Seleccionar jugadores</ion-label>
+    </ion-item>
+
+    <ion-list *ngIf="selectedPlayers.length > 0">
+      <ion-item *ngFor="let p of selectedPlayers">
+        <ion-avatar slot="start" *ngIf="p.image">
+          <img [src]="p.image" />
+        </ion-avatar>
+        <ion-label>{{ p.name }}</ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" color="primary" (click)="save()">
+      Iniciar Partida
+    </ion-button>
+  </form>
+</ion-content>

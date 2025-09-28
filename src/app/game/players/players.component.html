@@ -1,60 +1,55 @@
-<ion-modal [isOpen]="isModalOpen">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Selecciona jugadores y banco</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="onAccept()">Aceptar</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Selecciona jugadores y banco</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onCancel()">Cancelar</ion-button>
+      <ion-button (click)="onAccept()">Aceptar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-    <ion-content class="ion-padding">
-      <!-- Lista de todos los jugadores -->
-      <ion-list *ngIf="players.length > 0">
-        <ion-item
-          *ngFor="let player of players"
-          (click)="onPlayerSelected(player)"
-          [ngClass]="{ selected: isSelected(player), bank: isBank(player) }"
-        >
-          <ion-avatar slot="start">
-            <img
-              [src]="player.image ? player.image : 'assets/avatar/notset.png'"
-            />
-          </ion-avatar>
-          <ion-label>
-            {{ player.name }}
-            <ion-icon
-              *ngIf="isBank(player)"
-              name="cash-outline"
-              color="warning"
-              style="margin-left: 0.5em"
-            ></ion-icon>
-          </ion-label>
-        </ion-item>
-      </ion-list>
+<ion-content class="ion-padding">
+  <!-- Lista de todos los jugadores -->
+  <ion-list *ngIf="players.length > 0">
+    <ion-item
+      *ngFor="let player of players"
+      (click)="onPlayerSelected(player)"
+      [ngClass]="{ selected: isSelected(player), bank: isBank(player) }"
+    >
+      <ion-avatar slot="start">
+        <img [src]="player.image ? player.image : 'assets/avatar/notset.png'" />
+      </ion-avatar>
+      <ion-label>
+        {{ player.name }}
+        <ion-icon
+          *ngIf="isBank(player)"
+          name="cash-outline"
+          color="warning"
+          style="margin-left: 0.5em"
+        ></ion-icon>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
-      <!-- Selección de banco solo si hay jugadores seleccionados -->
-      <div *ngIf="playersSelected.length > 0" style="margin-top: 1em">
-        <h3>Selecciona quién será el banco</h3>
-        <ion-list>
-          <ion-item
-            *ngFor="let player of playersSelected"
-            (click)="onBankSelected(player)"
-            [ngClass]="{ selected: isBank(player), bank: isBank(player) }"
-          >
-            {{ player.name }}
-            <ion-icon
-              *ngIf="isBank(player)"
-              name="cash-outline"
-              color="warning"
-              style="margin-left: 0.5em"
-            ></ion-icon>
-          </ion-item>
-        </ion-list>
-      </div>
+  <!-- Selección de banco solo si hay jugadores seleccionados -->
+  <div *ngIf="playersSelected.length > 0" style="margin-top: 1em">
+    <h3>Selecciona quién será el banco</h3>
+    <ion-list>
+      <ion-item
+        *ngFor="let player of playersSelected"
+        (click)="onBankSelected(player)"
+        [ngClass]="{ selected: isBank(player), bank: isBank(player) }"
+      >
+        {{ player.name }}
+        <ion-icon
+          *ngIf="isBank(player)"
+          name="cash-outline"
+          color="warning"
+          style="margin-left: 0.5em"
+        ></ion-icon>
+      </ion-item>
+    </ion-list>
+  </div>
 
-      <p *ngIf="players.length === 0">No hay jugadores registrados.</p>
-    </ion-content>
-  </ng-template>
-</ion-modal>
+  <p *ngIf="players.length === 0">No hay jugadores registrados.</p>
+</ion-content>

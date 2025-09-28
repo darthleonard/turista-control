@@ -66,8 +66,8 @@ export class LocalDatabase extends Dexie {
     this.version(1).stores({
       players: 'id++',
       properties: 'id++',
-      gameConfigs: 'id++',
-      gameStates: 'id++',
+      gameConfigs: 'id++, name',
+      gameStates: 'id++, gameConfigId',
       gameHistories: 'id++',
     });
 
