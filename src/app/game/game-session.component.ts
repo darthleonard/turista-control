@@ -17,6 +17,8 @@ export class GameSessionComponent implements OnInit {
   currentPlayerId: number | null = null;
   activeConfig?: GameConfig;
   hasActiveGame = false;
+  moveSteps: number | null = null;
+  moveStepsError: string | null = null;
 
   constructor(
     private readonly gameEngine: GameEngineService,
@@ -99,10 +101,27 @@ export class GameSessionComponent implements OnInit {
     this.currentPlayerId = this.gameState?.currentPlayerId ?? null;
   }
 
-  /** Mover jugador actual */
-  async movePlayer(steps: number) {
-    if (!this.currentPlayerId) return;
-    await this.gameEngine.movePlayer(this.currentPlayerId, steps);
+  onStepsChange() {
+    if (this.moveSteps == null) return;
+
+    if (this.moveSteps < 2) {
+      this.moveStepsError = 'MOVE_STEPS_ERROR';
+      this.moveSteps = 2;
+    } else if (this.moveSteps > 12) {
+      this.moveStepsError = 'MOVE_STEPS_ERROR';
+      this.moveSteps = 12;
+    } else {
+      this.moveStepsError = null;
+    }
+  }
+
+  async movePlayer() {
+    if (!this.currentPlayerId || this.moveSteps == null) return;
+
+    if (this.moveStepsError) return;
+
+    await this.gameEngine.movePlayer(this.currentPlayerId, this.moveSteps);
+    this.moveSteps = null;
     await this.updateState();
   }
 

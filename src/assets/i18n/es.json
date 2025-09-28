@@ -40,5 +40,8 @@
   "SETTINGS": "Configuracion",
   "START_GAME": "Iniciar Partida",
   "START_NEW_GAME": "Iniciar nueva partida",
-  "TURN": "Turno"
+  "TURN": "Turno",
+  "ENTER_STEPS": "Número de casillas a mover",
+  "MOVE_PLAYER": "Mover jugador",
+  "MOVE_STEPS_ERROR": "El número de casillas debe estar entre 2 y 12"
 }

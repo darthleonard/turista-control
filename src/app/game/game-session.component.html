@@ -42,12 +42,28 @@
     </ion-list>
 
     <h3>{{ "ACTIONS" | translate }}</h3>
-    <ion-button expand="block" (click)="movePlayer(1)">
-      {{ "GAME_SESSION_MOVE_1" | translate }}
+
+    <ion-item>
+      <ion-label position="floating">{{ "ENTER_STEPS" | translate }}</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="moveSteps"
+        placeholder="2-12"
+        min="2"
+        max="12"
+        step="1"
+        (ionChange)="onStepsChange()"
+      ></ion-input>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="moveStepsError">
+      {{ moveStepsError | translate }}
+    </ion-text>
+
+    <ion-button expand="block" (click)="movePlayer()">
+      {{ "MOVE_PLAYER" | translate }}
     </ion-button>
-    <ion-button expand="block" (click)="movePlayer(2)">
-      {{ "GAME_SESSION_MOVE_2" | translate }}
-    </ion-button>
+
     <ion-button expand="block" color="success" (click)="buyProperty(1)">
       {{ "BUY_PROPERTY" | translate }}
     </ion-button>

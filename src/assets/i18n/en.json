@@ -40,5 +40,8 @@
   "SETTINGS": "Settings",
   "START_GAME": "Start Game",
   "START_NEW_GAME": "Start new game",
-  "TURN": "Turn"
+  "TURN": "Turn",
+  "ENTER_STEPS": "Number of steps to move",
+  "MOVE_PLAYER": "Move player",
+  "MOVE_STEPS_ERROR": "Number of steps must be between 2 and 12"
 }
