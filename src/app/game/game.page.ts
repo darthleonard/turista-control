@@ -42,6 +42,7 @@ export class GamePage {
   }
 
   onUpdatePositionClick() {
+    // request for dice roll (2d6)
     // current player position should be loaded at onNextTurnClick, to do calculations
     // select which cell is the player moving to, update position
     // if cell is start position or if player passes start position, give money to player
