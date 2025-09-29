@@ -9,6 +9,10 @@ const routes: Routes = [
     path: '',
     component: GameSessionComponent, // GamePage
   },
+  {
+    path: 'a',
+    component: GamePage,
+  },
 ];
 
 @NgModule({

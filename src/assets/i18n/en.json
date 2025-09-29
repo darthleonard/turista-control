@@ -1,6 +1,7 @@
 {
   "ACCEPT": "Accept",
   "ACTIONS": "Actions:",
+  "AUCTION": "Auction",
   "BOARD_CONFIG": "Board Configuration",
   "BUY_PROPERTY": "Buy property #1",
   "CANCEL": "Cancel",
@@ -32,6 +33,7 @@
   "PLAYERS_NO_REGISTERED": "No players registered.",
   "PLAYERS_SELECT_BANK": "Select who will be the bank",
   "PLAYERS_SELECT_TITLE": "Select players and bank",
+  "PREVIOUS_TURN": "Previous turn",
   "PROPERTIES": "Properties",
   "SAVE": "Save",
   "SELECT_LANGUAGE": "Select Language",
@@ -41,6 +43,7 @@
   "START_GAME": "Start Game",
   "START_NEW_GAME": "Start new game",
   "TURN": "Turn",
+  "UPDATE_POSITION": "Update Position",
   "ENTER_STEPS": "Number of steps to move",
   "MOVE_PLAYER": "Move player",
   "MOVE_STEPS_ERROR": "Number of steps must be between 2 and 12"

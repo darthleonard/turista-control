@@ -1,6 +1,7 @@
 {
   "ACCEPT": "Aceptar",
   "ACTIONS": "Acciones:",
+  "AUCTION": "Subasta",
   "BOARD_CONFIG": "Configuración de tablero",
   "BUY_PROPERTY": "Comprar propiedad #1",
   "CANCEL": "Cancelar",
@@ -32,6 +33,7 @@
   "PLAYERS_NO_REGISTERED": "No hay jugadores registrados.",
   "PLAYERS_SELECT_BANK": "Selecciona quién será el banco",
   "PLAYERS_SELECT_TITLE": "Selecciona jugadores y banco",
+  "PREVIOUS_TURN": "Turno anterior",
   "PROPERTIES": "Propiedades",
   "SAVE": "Guardar",
   "SELECT_LANGUAGE": "Seleccionar idioma",
@@ -41,6 +43,7 @@
   "START_GAME": "Iniciar Partida",
   "START_NEW_GAME": "Iniciar nueva partida",
   "TURN": "Turno",
+  "UPDATE_POSITION": "Actualizar Posición",
   "ENTER_STEPS": "Número de casillas a mover",
   "MOVE_PLAYER": "Mover jugador",
   "MOVE_STEPS_ERROR": "El número de casillas debe estar entre 2 y 12"

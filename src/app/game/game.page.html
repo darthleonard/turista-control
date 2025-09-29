@@ -1,5 +1,40 @@
 <app-header title="GAME"></app-header>
 
 <ion-content>
-  <app-players (acceept)="addPlayers($event)"></app-players>
+  <!-- <app-players (acceept)="addPlayers($event)"></app-players> -->
+
+  <ion-card *ngIf="loaded">
+    <img
+      alt="Silhouette of mountains"
+      src="{{ currentPlayer.image }}"
+      style="display: block; margin: 0 auto"
+    />
+    <ion-card-header>
+      <ion-card-title> {{ currentPlayer.name }} </ion-card-title>
+      <ion-card-subtitle> Current Money: $1000</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Current position: {{ 'COUNTRY_NAME' | translate }}</p>
+      <p>Some cell info</p>
+      <p>Is Owned: NO</p>
+      <p>Player Penalties: NO</p>
+    </ion-card-content>
+
+    <ion-button fill="clear" (click)="onUpdatePositionClick()">
+      {{ 'UPDATE_POSITION' | translate }}
+    </ion-button>
+  </ion-card>
+
+  <ion-item>
+    <ion-button (click)="onPreviousTurnClick()" expand="block">
+      {{ 'PREVIOUS_TURN' | translate }}
+    </ion-button>
+    <ion-button (click)="onNextTurnClick()" expand="block">
+      {{ 'NEXT_TURN' | translate }}
+    </ion-button>
+    <ion-button (click)="onFinishGameClick()" expand="block" color="danger">
+      {{ 'END_GAME' | translate }}
+    </ion-button>
+  </ion-item>
 </ion-content>
