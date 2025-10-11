@@ -27,13 +27,6 @@ export class GamePage {
   currentPlayer!: Player;
   loaded = false;
 
-  // model of the current state (turn, player, actions applied, etc.)
-  // currentState = {
-  //   turn: 1,
-  //   player: this.currentPlayer,
-  //   actions: []
-  // };
-
   ionViewWillEnter() {
     // if(!this.players) {
     //   this.playersModal.setOpen(true);
