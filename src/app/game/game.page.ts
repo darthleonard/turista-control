@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { GameSession, Player, TurnDetail } from '../database/local-database';
 import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
+import { PlayerActionsComponent } from './player-actions/player-actions.component';
 
 @Component({
   selector: 'app-game',
@@ -11,6 +12,8 @@ import { GameService } from '../services/game.service';
 })
 export class GamePage {
   @ViewChild(PlayersComponent) private readonly playersModal!: PlayersComponent;
+  @ViewChild(PlayerActionsComponent)
+  private readonly playerActionsModal!: PlayerActionsComponent;
 
   private currentGameSessionId!: number;
   private currentTurn = 0;
@@ -44,6 +47,8 @@ export class GamePage {
   }
 
   onUpdatePositionClick() {
+    this.playerActionsModal.setOpen(true);
+
     // request for dice roll (2d6)
     // current player position should be loaded at onNextTurnClick, to do calculations
     // select which cell is the player moving to, update position
