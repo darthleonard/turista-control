@@ -5,6 +5,8 @@ import {
   GameState,
   GameHistory,
   Player,
+  GameSession,
+  TurnDetail,
 } from '../database/local-database';
 
 @Injectable({
@@ -12,6 +14,27 @@ import {
 })
 export class GameService {
   constructor() {}
+
+  async getLastGameSession(): Promise<GameSession | undefined> {
+    return await localDatabase.gameSessions.orderBy('id').last();
+  }
+
+  async getLastTurnDetailBySessionId(
+    gameSessionId: number
+  ): Promise<TurnDetail | undefined> {
+    return await localDatabase.turnDetails
+      .where('gameSessionId')
+      .equals(gameSessionId)
+      .last();
+  }
+
+  async saveGameSession(session: GameSession): Promise<number> {
+    return await localDatabase.gameSessions.put(session);
+  }
+
+  async saveTurnDetail(detail: TurnDetail): Promise<number> {
+    return await localDatabase.turnDetails.put(detail);
+  }
 
   /** ================= CONFIGURACIONES ================= */
 

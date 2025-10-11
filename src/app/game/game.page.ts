@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Player } from '../database/local-database';
+import { GameSession, Player, TurnDetail } from '../database/local-database';
 import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
 
@@ -11,6 +11,15 @@ import { GameService } from '../services/game.service';
 })
 export class GamePage {
   @ViewChild(PlayersComponent) private readonly playersModal!: PlayersComponent;
+
+  private currentGameSessionId!: number;
+  private currentTurn = 0;
+  private isReversingTurnOrder = false;
+  private reverseTurnSteps = 0;
+
+  private gameSession!: GameSession;
+
+  private turnDetail!: TurnDetail;
 
   constructor(private readonly gameService: GameService) {}
 
@@ -52,15 +61,25 @@ export class GamePage {
     // if the property is unowned, offer to buy or auction
   }
 
-  onNextTurnClick() {
+  async onNextTurnClick() {
     // TODO: handle flag to indicate reverse turn order is finished
     // TODO: handle flow if coming back from previous turn navigation (should not advance turn)
     // TODO: save current player state
     // TODO: add current state to history
 
+    // save turn detail to DB
+    const turnDetailId = await this.gameService.saveTurnDetail(this.turnDetail);
+
     const currentIndex = this.players.indexOf(this.currentPlayer);
     const nextIndex = (currentIndex + 1) % this.players.length;
     this.currentPlayer = this.players[nextIndex];
+
+    this.currentTurn++;
+    this.turnDetail = {
+      gameSessionId: this.gameSession.id,
+      turnNumber: this.currentTurn,
+      playerId: this.currentPlayer.id!,
+    } as TurnDetail;
   }
 
   onPreviousTurnClick() {
@@ -71,19 +90,59 @@ export class GamePage {
     this.currentPlayer = this.players[previousIndex];
   }
 
-  onFinishGameClick() {
+  async onFinishGameClick() {
     // TODO: confirm action
     // TODO: save current player state
+
+    this.gameSession.finished = true;
+    await this.gameService.saveGameSession(this.gameSession);
+
     // TODO: show final summary and stats
   }
 
   private async loadGame() {
-    await this.loadPlayers();
-    // load board, properties, cards, etc.
-  }
+    // check if there's an active game session in DB
+    const lastSession = await this.gameService.getLastGameSession();
+    if (lastSession && !lastSession.finished) {
+      this.gameSession = lastSession;
+      const lastTurnDetail =
+        await this.gameService.getLastTurnDetailBySessionId(
+          this.gameSession.id
+        );
+      if (lastTurnDetail) {
+        this.turnDetail = lastTurnDetail;
+      } else {
+        this.turnDetail = {
+          gameSessionId: this.gameSession.id,
+          turnNumber: 1,
+          playerId: this.gameSession.playerIds[0],
+        } as TurnDetail;
+      }
+      console.log('Loaded existing game session', this.gameSession);
+    } else {
+      this.gameSession = {
+        playerIds: [1, 2, 3],
+        lastTurnDetailId: 1,
+        finished: false,
+      } as GameSession;
+      this.gameSession.id = await this.gameService.saveGameSession(
+        this.gameSession
+      );
 
-  private async loadPlayers() {
-    const playerIds = [1, 2, 3];
-    this.players = await this.gameService.getPlayersByIds(playerIds);
+      this.turnDetail = {
+        gameSessionId: this.gameSession.id,
+        turnNumber: 1,
+        playerId: 1,
+      } as TurnDetail;
+      console.log('Started new game session', this.gameSession);
+    }
+
+    this.currentTurn = this.turnDetail.turnNumber;
+
+    this.players = await this.gameService.getPlayersByIds(
+      this.gameSession.playerIds
+    );
+
+    // load board, properties, cards, etc.
   }
 }

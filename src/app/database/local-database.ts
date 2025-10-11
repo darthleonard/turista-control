@@ -1,5 +1,20 @@
 import Dexie from 'dexie';
 
+export interface GameSession {
+  id: number;
+  playerIds: number[];
+  lastTurnDetailId: number;
+  finished: boolean;
+}
+
+export interface TurnDetail {
+  id: number;
+  gameSessionId: number;
+  playerId: number;
+  turnNumber: number;
+  playerPosition?: number;
+}
+
 export interface Player {
   id: number;
   name: string;
@@ -55,6 +70,8 @@ export interface GameHistory {
 }
 
 export class LocalDatabase extends Dexie {
+  gameSessions: Dexie.Table<GameSession, number>;
+  turnDetails: Dexie.Table<TurnDetail, number>;
   players: Dexie.Table<Player, number>;
   properties: Dexie.Table<Property, number>;
   gameConfigs: Dexie.Table<GameConfig, number>;
@@ -63,7 +80,9 @@ export class LocalDatabase extends Dexie {
 
   constructor() {
     super('turista-control');
-    this.version(1).stores({
+    this.version(2).stores({
+      gameSessions: 'id++',
+      turnDetails: 'id++, gameSessionId, playerId',
       players: 'id++',
       properties: 'id++',
       gameConfigs: 'id++, name',
@@ -71,6 +90,8 @@ export class LocalDatabase extends Dexie {
       gameHistories: 'id++',
     });
 
+    this.gameSessions = this.table('gameSessions');
+    this.turnDetails = this.table('turnDetails');
     this.players = this.table('players');
     this.properties = this.table('properties');
     this.gameConfigs = this.table('gameConfigs');
