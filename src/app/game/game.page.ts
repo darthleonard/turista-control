@@ -66,7 +66,7 @@ export class GamePage {
     // TODO: add current state to history
 
     // save turn detail to DB
-    const turnDetailId = await this.gameService.saveTurnDetail(this.turnDetail);
+    await this.gameService.saveTurnDetail(this.turnDetail);
 
     const currentIndex = this.players.indexOf(this.currentPlayer);
     const nextIndex = (currentIndex + 1) % this.players.length;
