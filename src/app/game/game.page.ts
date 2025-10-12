@@ -121,7 +121,6 @@ export class GamePage {
     if (lastSession && !lastSession.finished) {
       this.gameSession = lastSession;
       this.turnDetail = await this.getOrCreateTurnDetail(false);
-      console.log('Loaded existing game session', this.gameSession);
     } else {
       // create and save new game session and turn detail
       this.gameSession = {
@@ -134,7 +133,6 @@ export class GamePage {
       );
 
       this.turnDetail = await this.getOrCreateTurnDetail(true);
-      console.log('Started new game session', this.gameSession);
     }
 
     await this.gameService.saveTurnDetail(this.turnDetail);
