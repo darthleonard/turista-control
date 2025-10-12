@@ -35,7 +35,9 @@ export class GamePage {
     // }
 
     this.loadGame().then(() => {
-      this.currentPlayer = this.players[0];
+      this.currentPlayer = this.players.find(
+        (p) => p.id === this.turnDetail.playerId
+      ) as Player;
       this.loaded = true;
     });
   }
