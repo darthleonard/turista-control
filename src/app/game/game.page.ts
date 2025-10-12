@@ -72,14 +72,19 @@ export class GamePage {
 
     this.turnCounter++;
     const isGameBeginning = this.turnCounter <= this.players.length;
-    this.turnDetail = await this.createTurnDetail(
+    const previousPlayerTurnDetail = await this.getOrCreateTurnDetail(
       isGameBeginning,
       this.currentPlayer.id
     );
-    this.turnDetail.id = undefined; // to force insert new record
-    this.turnDetail.turnNumber = this.turnCounter;
-    this.turnDetail.playerCredit = 0;
-    this.turnDetail.playerDebit = 0;
+
+    this.turnDetail = this.getDefaultTurn(this.currentPlayer.id);
+    this.turnDetail.playerTotalMoney =
+      previousPlayerTurnDetail.playerTotalMoney;
+
+    // this.turnDetail.id = undefined; // to force insert new record
+    // this.turnDetail.turnNumber = this.turnCounter;
+    // this.turnDetail.playerCredit = 0;
+    // this.turnDetail.playerDebit = 0;
     await this.gameService.saveTurnDetail(this.turnDetail);
   }
 
@@ -113,7 +118,7 @@ export class GamePage {
     const lastSession = await this.gameService.getLastGameSession();
     if (lastSession && !lastSession.finished) {
       this.gameSession = lastSession;
-      this.turnDetail = await this.createTurnDetail(false);
+      this.turnDetail = await this.getOrCreateTurnDetail(false);
       console.log('Loaded existing game session', this.gameSession);
     } else {
       // create and save new game session and turn detail
@@ -126,7 +131,7 @@ export class GamePage {
         this.gameSession
       );
 
-      this.turnDetail = await this.createTurnDetail(true);
+      this.turnDetail = await this.getOrCreateTurnDetail(true);
       console.log('Started new game session', this.gameSession);
     }
 
@@ -137,7 +142,7 @@ export class GamePage {
     );
   }
 
-  private async createTurnDetail(
+  private async getOrCreateTurnDetail(
     isGameBeginning: boolean,
     playerId?: number
   ): Promise<TurnDetail> {
