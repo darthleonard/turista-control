@@ -22,6 +22,8 @@
   "GAME_SESSION_PAY_RENT": "Pay rent property #1 to player #2",
   "IMAGE": "Image",
   "INITIAL_MONEY": "Initial Money",
+  "MONEY_PAID": "Money paid",
+  "MONEY_RECEIVED": "Money received",
   "NAME": "Name",
   "NEXT_TURN": "Next turn",
   "NO_ACTIVE_GAME": "No active game",

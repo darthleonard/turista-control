@@ -22,6 +22,8 @@
   "GAME_SESSION_PAY_RENT": "Pagar renta propiedad #1 al jugador #2",
   "IMAGE": "Imagen",
   "INITIAL_MONEY": "Dinero inicial",
+  "MONEY_PAID": "Dinero pagado",
+  "MONEY_RECEIVED": "Dinero recibido",
   "NAME": "Nombre",
   "NEXT_TURN": "Siguiente turno",
   "NO_ACTIVE_GAME": "No hay partida activa",

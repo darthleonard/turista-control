@@ -12,24 +12,44 @@
       <ion-content class="ion-padding">
         <ion-item>
           <ion-label position="floating">Current Cell</ion-label>
-          <ion-input type="text" />
+          <ion-input
+            type="number"
+            [(ngModel)]="turnDetails.playerPosition"
+            name="playerPosition"
+          />
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Pay Tax</ion-label>
-          <ion-input type="text" />
+          <ion-label position="floating">
+            {{ "MONEY_PAID" | translate }}
+          </ion-label>
+          <ion-input
+            type="number"
+            [(ngModel)]="turnDetails.playerDebit"
+            name="playerDebit"
+          />
         </ion-item>
 
         <ion-item>
-          <ion-label position="floating">Earn Money</ion-label>
-          <ion-input type="text" />
+          <ion-label position="floating">
+            {{ "MONEY_RECEIVED" | translate }}
+          </ion-label>
+          <ion-input
+            type="number"
+            [(ngModel)]="turnDetails.playerCredit"
+            name="playerCredit"
+          />
         </ion-item>
 
         <ion-item>
           <ion-label position="floating">Buy Property</ion-label>
-          <ion-input type="text" />
+          <!-- <ion-input
+            type="number"
+            [(ngModel)]="turnDetails.playerTotalMoney"
+            name="playerTotalMoney"
+          /> -->
         </ion-item>
-        <ion-button (click)="setOpen(false)">Finish</ion-button>
+        <ion-button (click)="save()">Finish</ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>

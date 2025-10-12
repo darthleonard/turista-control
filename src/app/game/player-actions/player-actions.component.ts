@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { TurnDetail } from 'src/app/models/turn-detail';
 
 @Component({
   selector: 'app-player-actions',
@@ -7,7 +8,16 @@ import { Component, OnInit } from '@angular/core';
   standalone: false,
 })
 export class PlayerActionsComponent implements OnInit {
-  constructor() {}
+  @Input() turnDetails: TurnDetail = {
+    gameSessionId: 0,
+    turnNumber: 0,
+    playerId: 0,
+    playerTotalMoney: 0,
+    playerDebit: 0,
+    playerCredit: 0,
+  };
+
+  @Output() saved: EventEmitter<void> = new EventEmitter<void>();
 
   isModalOpen = false;
 
@@ -15,5 +25,10 @@ export class PlayerActionsComponent implements OnInit {
 
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
+  }
+
+  save() {
+    this.saved.emit();
+    this.isModalOpen = false;
   }
 }

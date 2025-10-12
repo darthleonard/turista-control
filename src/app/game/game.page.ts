@@ -22,12 +22,11 @@ export class GamePage {
 
   private gameSession!: GameSession;
 
-  private turnDetail!: TurnDetail;
-
   constructor(private readonly gameService: GameService) {}
 
   players!: Player[];
   currentPlayer!: Player;
+  turnDetail!: TurnDetail;
   loaded = false;
 
   ionViewWillEnter() {
@@ -79,6 +78,8 @@ export class GamePage {
     );
     this.turnDetail.id = undefined; // to force insert new record
     this.turnDetail.turnNumber = this.turnCounter;
+    this.turnDetail.playerCredit = 0;
+    this.turnDetail.playerDebit = 0;
     await this.gameService.saveTurnDetail(this.turnDetail);
   }
 
@@ -98,6 +99,13 @@ export class GamePage {
     await this.gameService.saveGameSession(this.gameSession);
 
     // TODO: show final summary and stats
+  }
+
+  async onPlayerActionsSaved() {
+    this.turnDetail.playerTotalMoney =
+      this.turnDetail.playerTotalMoney +
+      (this.turnDetail.playerCredit || 0) -
+      (this.turnDetail.playerDebit || 0);
   }
 
   private async loadGame() {
