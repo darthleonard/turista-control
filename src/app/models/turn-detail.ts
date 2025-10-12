@@ -1,7 +1,10 @@
 export interface TurnDetail {
-  id: number;
+  id?: number;
   gameSessionId: number;
-  playerId: number;
   turnNumber: number;
+  playerId: number;
   playerPosition?: number;
+  playerTotalMoney: number;
+  playerDebit: number;
+  playerCredit: number;
 }

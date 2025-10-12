@@ -18,8 +18,16 @@ export class GameService {
   }
 
   async getLastTurnDetailBySessionId(
-    gameSessionId: number
+    gameSessionId: number,
+    playerId?: number
   ): Promise<TurnDetail | undefined> {
+    if (playerId) {
+      return await localDatabase.turnDetails
+        .where('[gameSessionId+playerId]')
+        .equals([gameSessionId, playerId])
+        .last();
+    }
+
     return await localDatabase.turnDetails
       .where('gameSessionId')
       .equals(gameSessionId)

@@ -60,9 +60,9 @@ export class LocalDatabase extends Dexie {
 
   constructor() {
     super('turista-control');
-    this.version(2).stores({
+    this.version(3).stores({
       gameSessions: 'id++',
-      turnDetails: 'id++, gameSessionId, playerId',
+      turnDetails: 'id++, gameSessionId, playerId, [gameSessionId+playerId]',
       players: 'id++',
       properties: 'id++',
       gameConfigs: 'id++, name',

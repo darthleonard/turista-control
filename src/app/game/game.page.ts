@@ -16,7 +16,7 @@ export class GamePage {
   private readonly playerActionsModal!: PlayerActionsComponent;
 
   private currentGameSessionId!: number;
-  private currentTurn = 0;
+  private turnCounter = 1;
   private isReversingTurnOrder = false;
   private reverseTurnSteps = 0;
 
@@ -62,24 +62,23 @@ export class GamePage {
   async onNextTurnClick() {
     // TODO: handle flag to indicate reverse turn order is finished
     // TODO: handle flow if coming back from previous turn navigation (should not advance turn)
-    // TODO: save current player state
-    // TODO: add current state to history
 
-    // save current turn detail to DB before change to new turn
+    // save current state, turn detail should be updated after closing actions modal
     await this.gameService.saveTurnDetail(this.turnDetail);
 
+    // create and save new state
     const currentIndex = this.players.indexOf(this.currentPlayer);
     const nextIndex = (currentIndex + 1) % this.players.length;
     this.currentPlayer = this.players[nextIndex];
 
-    this.currentTurn++;
-    this.turnDetail = {
-      gameSessionId: this.gameSession.id,
-      turnNumber: this.currentTurn,
-      playerId: this.currentPlayer.id!,
-    } as TurnDetail;
-
-    // save new turn
+    this.turnCounter++;
+    const isGameBeginning = this.turnCounter <= this.players.length;
+    this.turnDetail = await this.createTurnDetail(
+      isGameBeginning,
+      this.currentPlayer.id
+    );
+    this.turnDetail.id = undefined; // to force insert new record
+    this.turnDetail.turnNumber = this.turnCounter;
     await this.gameService.saveTurnDetail(this.turnDetail);
   }
 
@@ -106,21 +105,10 @@ export class GamePage {
     const lastSession = await this.gameService.getLastGameSession();
     if (lastSession && !lastSession.finished) {
       this.gameSession = lastSession;
-      const lastTurnDetail =
-        await this.gameService.getLastTurnDetailBySessionId(
-          this.gameSession.id
-        );
-      if (lastTurnDetail) {
-        this.turnDetail = lastTurnDetail;
-      } else {
-        this.turnDetail = {
-          gameSessionId: this.gameSession.id,
-          turnNumber: 1,
-          playerId: this.gameSession.playerIds[0],
-        } as TurnDetail;
-      }
+      this.turnDetail = await this.createTurnDetail(false);
       console.log('Loaded existing game session', this.gameSession);
     } else {
+      // create and save new game session and turn detail
       this.gameSession = {
         playerIds: [1, 2, 3],
         lastTurnDetailId: 1,
@@ -130,20 +118,52 @@ export class GamePage {
         this.gameSession
       );
 
-      this.turnDetail = {
-        gameSessionId: this.gameSession.id,
-        turnNumber: 1,
-        playerId: 1,
-      } as TurnDetail;
+      this.turnDetail = await this.createTurnDetail(true);
       console.log('Started new game session', this.gameSession);
     }
 
-    this.currentTurn = this.turnDetail.turnNumber;
+    await this.gameService.saveTurnDetail(this.turnDetail);
 
     this.players = await this.gameService.getPlayersByIds(
       this.gameSession.playerIds
     );
+  }
 
-    // load board, properties, cards, etc.
+  private async createTurnDetail(
+    isGameBeginning: boolean,
+    playerId?: number
+  ): Promise<TurnDetail> {
+    // If there is no gameSession, throw exception
+    if (!this.gameSession) {
+      throw { message: 'Game Session is not started' };
+    }
+
+    if (isGameBeginning) {
+      return this.getDefaultTurn(playerId);
+    }
+
+    const lastTurnDetail = await this.gameService.getLastTurnDetailBySessionId(
+      this.gameSession.id,
+      playerId
+    );
+
+    if (lastTurnDetail) {
+      return lastTurnDetail;
+    }
+
+    console.warn('turn not found for existing session, creating default turn');
+    return this.getDefaultTurn(playerId);
+  }
+
+  private getDefaultTurn(playerId?: number): TurnDetail {
+    return {
+      gameSessionId: this.gameSession.id,
+      turnNumber: this.turnCounter,
+      playerId: playerId || this.gameSession.playerIds[0],
+      playerPosition: 0,
+      playerTotalMoney: 75000, // TODO: get from game config
+      playerDebit: 0,
+      playerCredit: 0,
+    } as TurnDetail;
   }
 }
