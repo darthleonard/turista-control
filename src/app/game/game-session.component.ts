@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { GameEngineService } from '../services/game-engine.service';
 import { GameService } from '../services/game.service';
-import { Player, GameConfig, GameState } from '../database/local-database';
+import { GameConfig, GameState } from '../database/local-database';
 import { GameConfigComponent } from './game-config/game-config.component';
+import { Player } from '../models/player';
 
 @Component({
   selector: 'app-game-session',

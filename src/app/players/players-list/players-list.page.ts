@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
-import { Player } from '../../database/local-database';
 import { PlayerService } from '../../services/player.service';
+import { Player } from 'src/app/models/player';
 
 @Component({
   selector: 'app-players-list',

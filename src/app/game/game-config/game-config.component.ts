@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  localDatabase,
-  GameConfig,
-  Player,
-} from '../../database/local-database';
+import { localDatabase, GameConfig } from '../../database/local-database';
 import { PlayersComponent } from '../players/players.component';
+import { Player } from 'src/app/models/player';
 
 @Component({
   selector: 'app-game-config',

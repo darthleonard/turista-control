@@ -4,10 +4,8 @@ import {
   GameConfig,
   GameState,
   GameHistory,
-  Player,
-  GameSession,
-  TurnDetail,
 } from '../database/local-database';
+import { GameSession, Player, TurnDetail } from '../models';
 
 @Injectable({
   providedIn: 'root',

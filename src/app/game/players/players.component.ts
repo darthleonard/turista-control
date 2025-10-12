@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { localDatabase, Player } from '../../database/local-database';
+import { localDatabase } from '../../database/local-database';
+import { Player } from 'src/app/models/player';
 
 @Component({
   selector: 'app-players',

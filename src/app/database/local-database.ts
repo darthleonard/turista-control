@@ -1,25 +1,5 @@
 import Dexie from 'dexie';
-
-export interface GameSession {
-  id: number;
-  playerIds: number[];
-  lastTurnDetailId: number;
-  finished: boolean;
-}
-
-export interface TurnDetail {
-  id: number;
-  gameSessionId: number;
-  playerId: number;
-  turnNumber: number;
-  playerPosition?: number;
-}
-
-export interface Player {
-  id: number;
-  name: string;
-  image?: string;
-}
+import { GameSession, Player, TurnDetail } from '../models';
 
 export interface Property {
   id: number;

@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameService } from './game.service';
-import {
-  Player,
-  GameConfig,
-  GameState,
-  PlayerState,
-} from '../database/local-database';
+import { GameConfig, GameState, PlayerState } from '../database/local-database';
+import { Player } from '../models/player';
 
 @Injectable({ providedIn: 'root' })
 export class GameEngineService {

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GameSession, Player, TurnDetail } from '../database/local-database';
 import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
+import { GameSession, Player, TurnDetail } from '../models';
 
 @Component({
   selector: 'app-game',
