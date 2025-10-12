@@ -83,10 +83,6 @@ export class GamePage {
     this.turnDetail.playerTotalMoney =
       previousPlayerTurnDetail.playerTotalMoney;
 
-    // this.turnDetail.id = undefined; // to force insert new record
-    // this.turnDetail.turnNumber = this.turnCounter;
-    // this.turnDetail.playerCredit = 0;
-    // this.turnDetail.playerDebit = 0;
     await this.gameService.saveTurnDetail(this.turnDetail);
   }
 
