@@ -1,5 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
+import { BOARD_CELLS, BoardCell } from 'src/app/models/board-cells';
 import { TurnDetail } from 'src/app/models/turn-detail';
+import { PositionSelectorComponent } from '../position-selector/position-selector.component';
 
 @Component({
   selector: 'app-player-actions',
@@ -8,6 +17,9 @@ import { TurnDetail } from 'src/app/models/turn-detail';
   standalone: false,
 })
 export class PlayerActionsComponent implements OnInit {
+  @ViewChild(PositionSelectorComponent)
+  private positionSelector!: PositionSelectorComponent;
+
   @Input() turnDetails: TurnDetail = {
     gameSessionId: 0,
     turnNumber: 0,
@@ -20,6 +32,7 @@ export class PlayerActionsComponent implements OnInit {
   @Output() saved: EventEmitter<void> = new EventEmitter<void>();
 
   isModalOpen = false;
+  boardCells: BoardCell[] = BOARD_CELLS;
 
   ngOnInit() {}
 
@@ -30,5 +43,13 @@ export class PlayerActionsComponent implements OnInit {
   save() {
     this.saved.emit();
     this.isModalOpen = false;
+  }
+
+  onClick() {
+    this.positionSelector.setOpen(true);
+  }
+
+  onPositionSelected($event: number) {
+    this.turnDetails.playerPosition = $event;
   }
 }

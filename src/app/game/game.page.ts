@@ -3,6 +3,7 @@ import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { GameSession, Player, TurnDetail } from '../models';
+import { BOARD_CELLS, BoardCell } from '../models/board-cells';
 
 @Component({
   selector: 'app-game',
@@ -21,6 +22,8 @@ export class GamePage {
   private reverseTurnSteps = 0;
 
   private gameSession!: GameSession;
+
+  boardCells: BoardCell[] = BOARD_CELLS;
 
   constructor(private readonly gameService: GameService) {}
 

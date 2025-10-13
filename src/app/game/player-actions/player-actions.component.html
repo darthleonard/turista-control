@@ -13,10 +13,12 @@
         <ion-item>
           <ion-label position="floating">Current Cell</ion-label>
           <ion-input
-            type="number"
+            type="text"
+            readonly="true"
             [(ngModel)]="turnDetails.playerPosition"
             name="playerPosition"
-          />
+          ></ion-input>
+          <ion-icon slot="end" name="add" (click)="onClick()"></ion-icon>
         </ion-item>
 
         <ion-item>
@@ -54,3 +56,6 @@
     </ng-template>
   </ion-modal>
 </ion-content>
+<app-position-selector
+  (selected)="onPositionSelected($event)"
+></app-position-selector>

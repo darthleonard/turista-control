@@ -10,6 +10,7 @@ import { GameSessionComponent } from './game-session.component';
 import { GameConfigComponent } from './game-config/game-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
+import { PositionSelectorComponent } from './position-selector/position-selector.component';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { PlayerActionsComponent } from './player-actions/player-actions.componen
     GameConfigComponent,
     PlayersComponent,
     PlayerActionsComponent,
+    PositionSelectorComponent,
   ],
 })
 export class GamePageModule {}
