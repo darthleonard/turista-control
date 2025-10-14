@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BOARD_CELLS, BoardCell } from 'src/app/models/board-cells';
+import { BoardCell } from 'src/app/models/board-cells';
+import { BoardService } from 'src/app/services/board.service';
 
 @Component({
   selector: 'app-position-selector',
@@ -12,15 +13,17 @@ export class PositionSelectorComponent {
   @Output() selected: EventEmitter<number> = new EventEmitter<number>();
 
   isModalOpen = false;
-  boardCells: BoardCell[] = BOARD_CELLS;
-  results: BoardCell[] = this.boardCells;
+  boardCells!: BoardCell[];
+  searchResults: BoardCell[] = [];
   filterText = '';
 
-  constructor() {}
+  constructor(private readonly boardService: BoardService) {}
 
-  setOpen(isOpen: boolean) {
+  async setOpen(isOpen: boolean) {
     // TODO: if openning, load bought properties
     // TODO: show/hide BUY_PROPERTY button based on property ownership
+    this.boardCells = await this.boardService.getBoardCells(1);
+    this.searchResults = this.boardCells;
     this.isModalOpen = isOpen;
   }
 
@@ -32,7 +35,7 @@ export class PositionSelectorComponent {
   searchCell(event: Event) {
     const target = event.target as HTMLIonSearchbarElement;
     const query = target.value?.toLowerCase() || '';
-    this.results = this.boardCells.filter((d) =>
+    this.searchResults = this.boardCells.filter((d) =>
       d.name.toLowerCase().includes(query)
     );
   }

@@ -3,7 +3,7 @@ import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { GameSession, Player, TurnDetail } from '../models';
-import { BOARD_CELLS, BoardCell } from '../models/board-cells';
+import { BoardCell } from '../models/board-cells';
 import { PositionSelectorComponent } from './position-selector/position-selector.component';
 
 @Component({
@@ -32,7 +32,7 @@ export class GamePage {
   currentPlayer!: Player;
   turnDetail!: TurnDetail;
   loaded = false;
-  boardCells: BoardCell[] = BOARD_CELLS;
+  boardCells: BoardCell[] = [];
 
   ionViewWillEnter() {
     // if(!this.players) {
@@ -56,8 +56,8 @@ export class GamePage {
     this.playerActionsModal.setOpen(true);
   }
 
-  onUpdatePositionClick() {
-    this.positionSelector.setOpen(true);
+  async onUpdatePositionClick() {
+    await this.positionSelector.setOpen(true);
   }
 
   onPositionSelected($event: number) {
@@ -117,6 +117,10 @@ export class GamePage {
   }
 
   private async loadGame() {
+    // load game config
+    const boardId = 1; // TODO: get from game config
+    this.boardCells = await this.gameService.getBoardCells(boardId);
+
     // check if there's an active game session in DB
     const lastSession = await this.gameService.getLastGameSession();
     if (lastSession && !lastSession.finished) {

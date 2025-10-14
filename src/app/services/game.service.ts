@@ -6,12 +6,17 @@ import {
   GameHistory,
 } from '../database/local-database';
 import { GameSession, Player, TurnDetail } from '../models';
+import { BoardService } from './board.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  constructor() {}
+  constructor(private readonly boardService: BoardService) {}
+
+  async getBoardCells(boardId: number) {
+    return await this.boardService.getBoardCells(boardId);
+  }
 
   async getLastGameSession(): Promise<GameSession | undefined> {
     return await localDatabase.gameSessions.orderBy('id').last();

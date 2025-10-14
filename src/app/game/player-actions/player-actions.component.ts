@@ -6,7 +6,7 @@ import {
   EventEmitter,
   ViewChild,
 } from '@angular/core';
-import { BOARD_CELLS, BoardCell } from 'src/app/models/board-cells';
+import { BoardCell } from 'src/app/models/board-cells';
 import { TurnDetail } from 'src/app/models/turn-detail';
 import { PositionSelectorComponent } from '../position-selector/position-selector.component';
 
@@ -30,7 +30,6 @@ export class PlayerActionsComponent implements OnInit {
   @Output() saved: EventEmitter<void> = new EventEmitter<void>();
 
   isModalOpen = false;
-  boardCells: BoardCell[] = BOARD_CELLS;
 
   ngOnInit() {}
 
