@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BOARD_CELLS, BoardCell } from 'src/app/models/board-cells';
 
 @Component({
@@ -7,7 +7,7 @@ import { BOARD_CELLS, BoardCell } from 'src/app/models/board-cells';
   styleUrls: ['./position-selector.component.scss'],
   standalone: false,
 })
-export class PositionSelectorComponent implements OnInit {
+export class PositionSelectorComponent {
   @Input() selectedId?: number;
   @Output() selected: EventEmitter<number> = new EventEmitter<number>();
 
@@ -18,9 +18,9 @@ export class PositionSelectorComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
-
   setOpen(isOpen: boolean) {
+    // TODO: if openning, load bought properties
+    // TODO: show/hide BUY_PROPERTY button based on property ownership
     this.isModalOpen = isOpen;
   }
 

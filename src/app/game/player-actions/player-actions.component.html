@@ -11,14 +11,14 @@
       </ion-header>
       <ion-content class="ion-padding">
         <ion-item>
-          <ion-label position="floating">Current Cell</ion-label>
+          <ion-label position="floating">Cell to move</ion-label>
           <ion-input
             type="text"
             readonly="true"
             [(ngModel)]="turnDetails.playerPosition"
             name="playerPosition"
+            (click)="onClick()"
           ></ion-input>
-          <ion-icon slot="end" name="add" (click)="onClick()"></ion-icon>
         </ion-item>
 
         <ion-item>
@@ -52,6 +52,9 @@
           /> -->
         </ion-item>
         <ion-button (click)="save()">Finish</ion-button>
+        <ion-button *ngIf="true" (click)="save()" color="success">
+          {{ "BUY_PROPERTY" | translate }}
+        </ion-button>
       </ion-content>
     </ng-template>
   </ion-modal>
