@@ -4,6 +4,7 @@ import { GameService } from '../services/game.service';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { GameSession, Player, TurnDetail } from '../models';
 import { BOARD_CELLS, BoardCell } from '../models/board-cells';
+import { PositionSelectorComponent } from './position-selector/position-selector.component';
 
 @Component({
   selector: 'app-game',
@@ -15,6 +16,8 @@ export class GamePage {
   @ViewChild(PlayersComponent) private readonly playersModal!: PlayersComponent;
   @ViewChild(PlayerActionsComponent)
   private readonly playerActionsModal!: PlayerActionsComponent;
+  @ViewChild(PositionSelectorComponent)
+  private positionSelector!: PositionSelectorComponent;
 
   private currentGameSessionId!: number;
   private turnCounter = 1;
@@ -49,8 +52,12 @@ export class GamePage {
     console.log(players);
   }
 
-  onUpdatePositionClick() {
+  onActionsClick() {
     this.playerActionsModal.setOpen(true);
+  }
+
+  onUpdatePositionClick() {
+    this.positionSelector.setOpen(true);
 
     // request for dice roll (2d6)
     // current player position should be loaded at onNextTurnClick, to do calculations
@@ -105,6 +112,10 @@ export class GamePage {
     await this.gameService.saveGameSession(this.gameSession);
 
     // TODO: show final summary and stats
+  }
+
+  onPositionSelected($event: number) {
+    this.turnDetail.playerPosition = $event;
   }
 
   async onPlayerActionsSaved() {

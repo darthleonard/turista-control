@@ -17,9 +17,6 @@ import { PositionSelectorComponent } from '../position-selector/position-selecto
   standalone: false,
 })
 export class PlayerActionsComponent implements OnInit {
-  @ViewChild(PositionSelectorComponent)
-  private positionSelector!: PositionSelectorComponent;
-
   @Input() turnDetails: TurnDetail = {
     gameSessionId: 0,
     turnNumber: 0,
@@ -44,13 +41,5 @@ export class PlayerActionsComponent implements OnInit {
   save() {
     this.saved.emit();
     this.isModalOpen = false;
-  }
-
-  onClick() {
-    this.positionSelector.setOpen(true);
-  }
-
-  onPositionSelected($event: number) {
-    this.turnDetails.playerPosition = $event;
   }
 }

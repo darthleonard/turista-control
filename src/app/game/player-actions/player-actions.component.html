@@ -11,17 +11,6 @@
       </ion-header>
       <ion-content class="ion-padding">
         <ion-item>
-          <ion-label position="floating">Cell to move</ion-label>
-          <ion-input
-            type="text"
-            readonly="true"
-            [(ngModel)]="turnDetails.playerPosition"
-            name="playerPosition"
-            (click)="onClick()"
-          ></ion-input>
-        </ion-item>
-
-        <ion-item>
           <ion-label position="floating">
             {{ "MONEY_PAID" | translate }}
           </ion-label>
@@ -59,6 +48,3 @@
     </ng-template>
   </ion-modal>
 </ion-content>
-<app-position-selector
-  (selected)="onPositionSelected($event)"
-></app-position-selector>

@@ -29,6 +29,10 @@
     <ion-button fill="clear" (click)="onUpdatePositionClick()">
       {{ 'UPDATE_POSITION' | translate }}
     </ion-button>
+
+    <ion-button fill="clear" (click)="onActionsClick()">
+      {{ 'ACTIONS' | translate }}
+    </ion-button>
   </ion-card>
 
   <ion-item>
@@ -42,9 +46,13 @@
       {{ 'END_GAME' | translate }}
     </ion-button>
   </ion-item>
-
-  <app-player-actions
-    [turnDetails]="turnDetail"
-    (saved)="onPlayerActionsSaved()"
-  ></app-player-actions>
 </ion-content>
+
+<app-position-selector
+  (selected)="onPositionSelected($event)"
+></app-position-selector>
+
+<app-player-actions
+  [turnDetails]="turnDetail"
+  (saved)="onPlayerActionsSaved()"
+></app-player-actions>
