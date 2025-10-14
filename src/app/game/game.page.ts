@@ -17,7 +17,7 @@ export class GamePage {
   @ViewChild(PlayerActionsComponent)
   private readonly playerActionsModal!: PlayerActionsComponent;
   @ViewChild(PositionSelectorComponent)
-  private positionSelector!: PositionSelectorComponent;
+  private readonly positionSelector!: PositionSelectorComponent;
 
   private currentGameSessionId!: number;
   private turnCounter = 1;
