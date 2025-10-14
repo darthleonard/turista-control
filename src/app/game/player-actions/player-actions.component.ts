@@ -24,6 +24,7 @@ export class PlayerActionsComponent implements OnInit {
     gameSessionId: 0,
     turnNumber: 0,
     playerId: 0,
+    playerPosition: 0,
     playerTotalMoney: 0,
     playerDebit: 0,
     playerCredit: 0,

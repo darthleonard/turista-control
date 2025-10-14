@@ -23,14 +23,13 @@ export class GamePage {
 
   private gameSession!: GameSession;
 
-  boardCells: BoardCell[] = BOARD_CELLS;
-
   constructor(private readonly gameService: GameService) {}
 
   players!: Player[];
   currentPlayer!: Player;
   turnDetail!: TurnDetail;
   loaded = false;
+  boardCells: BoardCell[] = BOARD_CELLS;
 
   ionViewWillEnter() {
     // if(!this.players) {
@@ -85,6 +84,7 @@ export class GamePage {
     this.turnDetail = this.getDefaultTurn(this.currentPlayer.id);
     this.turnDetail.playerTotalMoney =
       previousPlayerTurnDetail.playerTotalMoney;
+    this.turnDetail.playerPosition = previousPlayerTurnDetail.playerPosition;
 
     await this.gameService.saveTurnDetail(this.turnDetail);
   }
@@ -135,6 +135,7 @@ export class GamePage {
     }
 
     await this.gameService.saveTurnDetail(this.turnDetail);
+    this.turnCounter = this.turnDetail.turnNumber;
 
     this.players = await this.gameService.getPlayersByIds(
       this.gameSession.playerIds

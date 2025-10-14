@@ -17,7 +17,10 @@
     </ion-card-header>
 
     <ion-card-content>
-      <p>Current position: {{ 'COUNTRY_NAME' | translate }}</p>
+      <p>
+        Current position: {{ turnDetail.playerPosition |
+        boardCellName:boardCells }}
+      </p>
       <p>Some cell info</p>
       <p>Is Owned: NO</p>
       <p>Player Penalties: NO</p>

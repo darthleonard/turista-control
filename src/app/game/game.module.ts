@@ -11,6 +11,7 @@ import { GameConfigComponent } from './game-config/game-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { PositionSelectorComponent } from './position-selector/position-selector.component';
+import { BoardCellNamePipe } from '../pipes/board-cell-name.pipe';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { PositionSelectorComponent } from './position-selector/position-selector
     ComponentsModule,
     GamePageRoutingModule,
     TranslateModule,
+    BoardCellNamePipe,
   ],
   declarations: [
     GamePage,
