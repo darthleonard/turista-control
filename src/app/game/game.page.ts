@@ -58,15 +58,17 @@ export class GamePage {
 
   onUpdatePositionClick() {
     this.positionSelector.setOpen(true);
+  }
 
-    // request for dice roll (2d6)
-    // current player position should be loaded at onNextTurnClick, to do calculations
-    // select which cell is the player moving to, update position
-    // if cell is start position or if player passes start position, give money to player
-    // update cell info on UI
-    // if property is card(email/message), draw card and apply effect
-    // if the property is owned by another player, pay rent (if the property is owned by the current player, do nothing)
-    // if the property is unowned, offer to buy or auction
+  onPositionSelected($event: number) {
+    this.turnDetail.playerPosition = $event;
+  }
+
+  async onPlayerActionsSaved() {
+    this.turnDetail.playerTotalMoney =
+      this.turnDetail.playerTotalMoney +
+      (this.turnDetail.playerCredit || 0) -
+      (this.turnDetail.playerDebit || 0);
   }
 
   async onNextTurnClick() {
@@ -112,17 +114,6 @@ export class GamePage {
     await this.gameService.saveGameSession(this.gameSession);
 
     // TODO: show final summary and stats
-  }
-
-  onPositionSelected($event: number) {
-    this.turnDetail.playerPosition = $event;
-  }
-
-  async onPlayerActionsSaved() {
-    this.turnDetail.playerTotalMoney =
-      this.turnDetail.playerTotalMoney +
-      (this.turnDetail.playerCredit || 0) -
-      (this.turnDetail.playerDebit || 0);
   }
 
   private async loadGame() {
