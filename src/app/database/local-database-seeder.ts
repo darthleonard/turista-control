@@ -12,7 +12,7 @@ export class LocalDatabaseSeeder {
 
     db.boards.add({ id: 1, name: 'Default Board', default: true });
 
-    db.boardCells.bulkAdd([
+    db.boardCells.bulkPut([
       { id: 0, boardId: 1, name: 'Salida', type: 'start', color: null },
       {
         id: 1,
