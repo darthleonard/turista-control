@@ -9,9 +9,9 @@ import { PlayersComponent } from './players/players.component';
 import { GameSessionComponent } from './game-session.component';
 import { GameConfigComponent } from './game-config/game-config.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { PositionSelectorComponent } from './position-selector/position-selector.component';
 import { BoardCellNamePipe } from '../pipes/board-cell-name.pipe';
+import { MoneyMovementComponent } from './money-movement/money-movement.component';
 
 @NgModule({
   imports: [
@@ -29,8 +29,8 @@ import { BoardCellNamePipe } from '../pipes/board-cell-name.pipe';
     GameSessionComponent,
     GameConfigComponent,
     PlayersComponent,
-    PlayerActionsComponent,
     PositionSelectorComponent,
+    MoneyMovementComponent,
   ],
 })
 export class GamePageModule {}

@@ -1,0 +1,7 @@
+<ion-alert
+  [isOpen]="isAlertOpen"
+  header="{{ title | translate }}"
+  [buttons]="alertButtons"
+  [inputs]="alertInputs"
+  (didDismiss)="setOpen(false)"
+></ion-alert>

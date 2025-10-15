@@ -30,8 +30,16 @@
       {{ 'UPDATE_POSITION' | translate }}
     </ion-button>
 
-    <ion-button fill="clear" (click)="onActionsClick()">
-      {{ 'ACTIONS' | translate }}
+    <ion-button fill="clear" (click)="onBuyPropertyClick()">
+      {{ 'BUY_PROPERTY' | translate }}
+    </ion-button>
+
+    <ion-button fill="clear" (click)="onAchieveMoneyClick()">
+      {{ 'ACHIEVE_MONEY' | translate }}
+    </ion-button>
+
+    <ion-button fill="clear" (click)="onPayMoneyClick()">
+      {{ 'PAY_MONEY' | translate }}
     </ion-button>
   </ion-card>
 
@@ -52,7 +60,4 @@
   (selected)="onPositionSelected($event)"
 ></app-position-selector>
 
-<app-player-actions
-  [turnDetails]="turnDetail"
-  (saved)="onPlayerActionsSaved()"
-></app-player-actions>
+<app-money-movement (done)="onMoneyMovementDone($event)"></app-money-movement>

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PlayersComponent } from './players/players.component';
 import { GameService } from '../services/game.service';
-import { PlayerActionsComponent } from './player-actions/player-actions.component';
 import { GameSession, Player, TurnDetail } from '../models';
 import { BoardCell } from '../models/board-cells';
 import { PositionSelectorComponent } from './position-selector/position-selector.component';
+import { MoneyMovementComponent } from './money-movement/money-movement.component';
 
 @Component({
   selector: 'app-game',
@@ -14,10 +14,10 @@ import { PositionSelectorComponent } from './position-selector/position-selector
 })
 export class GamePage {
   @ViewChild(PlayersComponent) private readonly playersModal!: PlayersComponent;
-  @ViewChild(PlayerActionsComponent)
-  private readonly playerActionsModal!: PlayerActionsComponent;
   @ViewChild(PositionSelectorComponent)
   private readonly positionSelector!: PositionSelectorComponent;
+  @ViewChild(MoneyMovementComponent)
+  private readonly moneyMovementComponent!: MoneyMovementComponent;
 
   private currentGameSessionId!: number;
   private turnCounter = 1;
@@ -52,23 +52,30 @@ export class GamePage {
     console.log(players);
   }
 
-  onActionsClick() {
-    this.playerActionsModal.setOpen(true);
-  }
-
   async onUpdatePositionClick() {
     await this.positionSelector.setOpen(true);
+  }
+
+  onBuyPropertyClick() {
+    // open a modal
+    // select player who is buying or property was auctioned
+    // show property details and confirm purchase
+  }
+
+  onAchieveMoneyClick() {
+    this.moneyMovementComponent.setOpen(true, 'MONEY_FOR_PLAYER', '+');
+  }
+
+  onPayMoneyClick() {
+    this.moneyMovementComponent.setOpen(true, 'MONEY_FROM_PLAYER', '-');
   }
 
   onPositionSelected($event: number) {
     this.turnDetail.playerPosition = $event;
   }
 
-  async onPlayerActionsSaved() {
-    this.turnDetail.playerTotalMoney =
-      this.turnDetail.playerTotalMoney +
-      (this.turnDetail.playerCredit || 0) -
-      (this.turnDetail.playerDebit || 0);
+  onMoneyMovementDone($event: number) {
+    this.turnDetail.playerTotalMoney += $event;
   }
 
   async onNextTurnClick() {
